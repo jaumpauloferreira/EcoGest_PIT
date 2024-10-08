@@ -1,0 +1,69 @@
+.form-colab input {
+    border: 1px solid black;
+}
+
+.alert-success-custom {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.custom-table-container {
+    margin-bottom: 20px;
+    width: 100%;
+    overflow-x: auto; 
+}
+
+.custom-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto; 
+}
+
+.custom-table th, .custom-table td {
+    border: 1px solid black;
+    padding: 4px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.85em;
+}
+
+.custom-table .w-5 {
+    width: 5%;
+}
+
+.custom-table .w-10 {
+    width: 10%;
+}
+
+.custom-table .w-15 {
+    width: 15%;
+}
+
+.custom-table .w-20 {
+    width: 20%;
+}
+
+.custom-table .dark-green {
+    background-color: #006400;
+    color: #ffffff;
+}
+
+.custom-table .light-green {
+    background-color: #90ee90;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #90ee90;
+}
+
+.custom-table tr:nth-child(odd) {
+    background-color: #006400;
+}
+
+.pesquise-label {
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 1.7em; 
+}

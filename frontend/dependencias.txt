@@ -1,0 +1,11 @@
+-- FrontEndGrupo
+npm i react-router-dom
+
+-- BackEndGrupo
+npm i express --save
+npm i mysql12
+npm i cors
+npm i jsonwebtoken
+npm i jwt-decode
+npm i bcryptjs
+npm i dotenv
