@@ -21,11 +21,10 @@ CREATE TABLE `beneficiario` (
 
 -- Inserção de dados na tabela beneficiario
 INSERT INTO `beneficiario` (`id`, `nome`, `cpf`, `contato`, `email`, `endereco`, `bairro`, `numero`, `datanascimento`) VALUES
-(81, 'João Paulo Ferreira da Silva', '336.360.788-73', '(14) 99878-4400', 'joaopaulo@hotmail.com', 'Rua Eleazar', 'Eldorado', 61, '1985-10-08'),
-(94, 'Pedro da Silva Sauro', '080.370.774-18', '(44) 99541-2542', 'joaoss@gmail.com', 'Rua das pedras verdes', 'Centro', 188, '1991-03-16'),
-(95, 'Maria das Dores', '123.456.549-87', '(13) 45695-8451', 'mariadasdores@hotmail.com', 'Rua das rosas vermelhas', 'Jaboticabal', 215, '1985-06-12'),
-(96, 'Ana Julia Medeiros', '654.123.987-45', '(43) 99854-7526', 'anajuliam@outlook.com', 'Avenida Brasil', 'Centro', 123, '1994-04-03'),
-(97, 'Benício Henrique dos Santos', '456.711.452-36', '(45) 99142-3569', 'beniciohs@gmail.com', 'Rua Joaquim Santos', 'Joao de Barro', 456, '1979-09-13');
+(1, 'João Paulo Ferreira da Silva', '336.360.788-73', '(14) 99878-4400', 'joaopaulo@hotmail.com', 'Rua Eleazar', 'Eldorado', 61, '1985-10-08'),
+(2, 'Pedro da Silva Sauro', '080.370.774-18', '(44) 99541-2542', 'joaoss@gmail.com', 'Rua das pedras verdes', 'Centro', 188, '1991-03-16'),
+(3, 'Maria das Dores', '123.456.549-87', '(13) 45695-8451', 'mariadasdores@hotmail.com', 'Rua das rosas vermelhas', 'Jaboticabal', 215, '1985-06-12'),
+(4, 'Ana Julia Medeiros', '654.123.987-45', '(43) 99854-7526', 'anajuliam@outlook.com', 'Avenida Brasil', 'Centro', 123, '1994-04-03');
 
 -- Tabela cadastrotiposdemaquinario
 DROP TABLE IF EXISTS `cadastrotiposdemaquinario`;
@@ -103,9 +102,9 @@ CREATE TABLE `colaboradores` (
 -- Inserção de dados na tabela colaboradores
 INSERT INTO `colaboradores` (`id`, `nome`, `cpf`, `contato`, `endereco`, `bairro`, `numero`, `dataNascimento`, `cargo`, `nivelEscolaridade`, `email`) VALUES
 (1, 'Vitória Caldeira dos Santos', '518.508.748-08', '(18) 99626-4023', 'Rua Valter da Silva', 'Asa Branca', 260, '2002-10-26', 'Fiscal', 'Doutorado', 'vitoria@gmail.com'),
-(7, 'Maria Cleusa', '232.434.324-32', '(18) 99548-3029', 'Rua Valter da Silva', 'Jardim Por do Sol', 1211, '2001-12-11', 'Secretário', 'Ensino Técnico', 'test@gmail.com.br'),
-(37, 'Alice Joaquina da Silva', '756.421.265-79', '(18) 99845-2145', 'Rua Joaquim Campos', 'Centro', 154, '1990-05-16', 'Assessor', 'Pós-graduação', 'alicejoaquina@outlook.com'),
-(38, 'Carlos Cesar de Souza', '452.145.698-54', '(18) 45124-6985', 'Rua dos Patos', 'Centro', 452, '2000-08-01', 'Auxiliar', 'Ensino Técnico', 'carloscesar@hotmail.com');
+(2, 'Maria Cleusa', '232.434.324-32', '(18) 99548-3029', 'Rua Valter da Silva', 'Jardim Por do Sol', 1211, '2001-12-11', 'Secretário', 'Ensino Técnico', 'test@gmail.com.br'),
+(3, 'Alice Joaquina da Silva', '756.421.265-79', '(18) 99845-2145', 'Rua Joaquim Campos', 'Centro', 154, '1990-05-16', 'Assessor', 'Pós-graduação', 'alicejoaquina@outlook.com'),
+(4, 'Carlos Cesar de Souza', '452.145.698-54', '(18) 45124-6985', 'Rua dos Patos', 'Centro', 452, '2000-08-01', 'Auxiliar', 'Ensino Técnico', 'carloscesar@hotmail.com');
 
 -- Tabela criarativsust
 DROP TABLE IF EXISTS `criarativsust`;
@@ -129,7 +128,9 @@ CREATE TABLE `criarativsust` (
 
 -- Inserção de dados na tabela criarativsust
 INSERT INTO `criarativsust` (`criar_id`, `criar_nome`, `criar_cpf`, `criar_contato`, `criar_endereco`, `criar_bairro`, `criar_numero`, `id`, `criar_data`, `criar_horarioInicial`, `criar_horarioFinal`, `criar_descricao`) VALUES
-(1, 'João da Silva', '12345678901', '(11) 91234-5678', 'Rua Exemplo, 123', 'Centro', 45, 1, '2024-09-20', '08:00:00', '12:00:00', 'Atividade de coleta seletiva no bairro Centro.');
+(1, 'João da Silva', '12345678901', '(11) 91234-5678', 'Rua Exemplo, 123', 'Centro', 45, 1, '2024-09-20', '08:00:00', '12:00:00', 'Atividade de coleta seletiva no bairro Centro.'),
+(2, 'Ana Clara', '98765432100', '(21) 92345-6789', 'Av. Principal, 456', 'Jardim Paulista', 22, 2, '2024-10-01', '09:00:00', '13:00:00', 'Atividade de educação ambiental para crianças.'),
+(3, 'Taisa Mariana', '11223344556', '(31) 93456-7890', 'Rua Verde, 789', 'Vila Nova', 12, 3, '2024-10-10', '14:00:00', '16:00:00', 'Palestra sobre reciclagem e reaproveitamento de materiais.');
 
 -- Tabela maquinario
 DROP TABLE IF EXISTS `maquinario`;
@@ -145,7 +146,7 @@ CREATE TABLE `maquinario` (
 INSERT INTO `maquinario` (`id`, `modelo`, `placa`, `ano`) VALUES
 (1, 'Pá Carregadeira Caterpillar', 'AAA-0A00', 2024),
 (2, 'Motoniveladora Caterpillar', 'BBB-0B00', 2024),
-(6, 'Trator John Deere', 'CCC-0C00', 2024);
+(3, 'Trator John Deere', 'CCC-0C00', 2024);
 
 -- Tabela roles
 DROP TABLE IF EXISTS `roles`;
@@ -192,3 +193,29 @@ INSERT INTO `user` (`email`, `nome`, `senha`) VALUES
 ('t1@gmail.com', 't1', '$2a$10$bmoonC20reMbMOc/eRJyGOB28EHx1icSZN.P8B1HCTaUWfdnljRri'),
 ('teste@gmail.com', 'teste', '$2a$10$OTfqlVuQr83.Zy24XFI7N.zUkdcORmfx8zD71XhKvowpYx/bbb8Dm'),
 ('thiago@gmail.com', 'Thiago', '$2a$10$kPHqGoJAkpJVfhQE.Hx/KuvWdIGkMpY5YUgJx7RWvV/I7xw.WDdne');
+
+-- Tabela realizaragserv
+DROP TABLE IF EXISTS `realizaragserv`;
+CREATE TABLE `realizaragserv` (
+  `agserv_id` int(11) NOT NULL AUTO_INCREMENT,
+  `agserv_nomeSolicitante` varchar(100) NOT NULL,
+  `agserv_cpfSolicitante` varchar(14) NOT NULL,
+  `agserv_contatoSolicitante` varchar(20) DEFAULT NULL,
+  `agserv_endereco` varchar(255) DEFAULT NULL,
+  `agserv_bairro` varchar(100) DEFAULT NULL,
+  `agserv_numero` int(5) DEFAULT NULL,
+  `agserv_tipoServico_id` int(11) NOT NULL,
+  `agserv_data` date DEFAULT NULL,
+  `agserv_horario` time NOT NULL,
+  `agserv_descricao` varchar(1000) NOT NULL,
+  PRIMARY KEY (`agserv_id`),
+  KEY `fk_cadastrotiposdeservico_realizaragserv` (`agserv_tipoServico_id`),
+  CONSTRAINT `fk_cadastrotiposdeservico_realizaragserv` FOREIGN KEY (`agserv_tipoServico_id`) REFERENCES `cadastrotiposdeservico` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Inserção de dados na tabela realizaragserv
+INSERT INTO `realizaragserv` VALUES 
+(1,'Carlos Eduardo','12345678901','(11) 91234-5678','Rua Exemplo, 123','Centro',45,1,'2024-10-20','09:00:00','Serviço de poda de árvores em área pública'),
+(2,'Ana Maria','98765432100','(22) 98765-4321','Av. Brasil, 321','Zona Sul',100,3,'2024-10-21','10:00:00','Liberação de mudas de árvores para comunidade'),
+(3,'Roberto Silva','11122233344','(33) 99999-8888','Rua das Flores, 789','Jardim Primavera',120,4,'2024-10-22','11:30:00','Medição e análise da qualidade do ar em área industrial');
+

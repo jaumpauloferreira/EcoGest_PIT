@@ -11,6 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import NavBar from './Componentes/NavBar';
 import Home from './Componentes/Home';
 import CadTiposServ from './Paginas/TiposDeServico/CadTiposServ';
+import RealizarAgServ from './Paginas/RealizarAgServ/RealizarAgServ';
 import CadTipoMaq from './Paginas/TipoMaquinario/CadTipoMaq';
 import Login from './Componentes/Login';
 import Register from './Componentes/Register';
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: '/TiposDeServico/:idServico',
         element: <ProtectedRoute> <CadTiposServ /> </ProtectedRoute>, // Rota protegida
+      },
+      {
+        path: '/RealizarAgServ',
+        element: <ProtectedRoute> <RealizarAgServ /> </ProtectedRoute>, // Rota protegida
       },
     ],
   },

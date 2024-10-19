@@ -8,8 +8,9 @@ import {
   Container,
   Alert,
   Table,
+  FormLabel,
 } from "react-bootstrap";
-import { FaListAlt, FaSave, FaTrash, FaEdit } from "react-icons/fa";
+import { FaListAlt, FaSave, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AtivSustService from "../../services/AtivSustService.js";
 import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.js";
@@ -48,6 +49,8 @@ function CriarAtivSust() {
   const [tiposAtividades, setTiposAtividades] = useState([]); // Estado para armazenar os tipos de atividades
   const [sucessoMensagem, setSucessoMensagem] = useState("");
   const [erro, setErro] = useState("");
+  const [searchName, setSearchName] = useState(""); // Estado para o campo de busca
+  const [mostrarTabela, setMostrarTabela] = useState(false); // Controla exibição da tabela filtrada
   const navigate = useNavigate();
   const { idAtivSust } = useParams(); // Obtém o ID da atividade da URL
   const [errors, setErrors] = useState({});
@@ -72,6 +75,7 @@ function CriarAtivSust() {
       criar_data: formatarData(atividade.criar_data),
     }));
     setListaAtividades(atividadesComDataFormatada); // Atualiza a lista com as atividades buscadas
+    setMostrarTabela(true); // Exibe a tabela após carregar atividades
   };
 
   useEffect(() => {
@@ -228,6 +232,11 @@ function CriarAtivSust() {
       setErro("Erro ao obter dados da atividade.");
     }
   };
+
+  // Filtro por nome
+  const filteredAtividades = listaAtividades?.filter((atividade) =>
+    atividade.criar_nome.toLowerCase().includes(searchName.toLowerCase())
+  );
 
   return (
     <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
@@ -483,7 +492,26 @@ function CriarAtivSust() {
         <Card>
           <Card.Header as="h5">Atividades Cadastradas</Card.Header>
           <Card.Body>
-            {listaAtividades && listaAtividades.length > 0 ? (
+            <Form className="d-flex justify-content-start mb-4">
+              <FormLabel
+                className="me-2"
+                style={{ fontWeight: "bold", fontSize: "1.2rem" }} // Estilo ajustado para negrito e tamanho da fonte maior
+              >
+                Pesquise
+              </FormLabel>
+              <Form.Control
+                type="text"
+                placeholder="Pesquise o nome"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                className="me-2"
+              />
+              <Button onClick={() => listarAtividades(searchName)} variant="secondary">
+                <FaSearch />
+              </Button>
+            </Form>
+
+            {mostrarTabela && listaAtividades && listaAtividades.length > 0 ? (
               <Table className="border-success mt-2">
                 <thead>
                   <tr>
@@ -497,7 +525,7 @@ function CriarAtivSust() {
                   </tr>
                 </thead>
                 <tbody>
-                  {listaAtividades.map((atividade) => (
+                  {filteredAtividades.map((atividade) => (
                     <tr key={atividade.criar_id}>
                       <td>{atividade.criar_id}</td>
                       <td colSpan={3}>{atividade.criar_nome}</td>
@@ -538,5 +566,3 @@ function CriarAtivSust() {
 }
 
 export default CriarAtivSust;
-
-

@@ -11,6 +11,7 @@ const colaboradoresRoutes = require('./routers/ColaboradoresRoutes')
 const beneficiarioRoutes = require('./routers/BeneficiarioRoutes')
 const maquinarioRouter = require('./routers/MaquinarioRouter')
 const servicoRouters = require('./routers/ServicoRouters')
+const RealizarAgServRouters = require('./routers/RealizarAgServRoutes')
 const tipoMaquinarioRouter = require('./routers/TipoMaquinarioRouters')
 const criarAtivSustRouter = require('./routers/CriarAtivSustRouter')
 const app = express();
@@ -28,6 +29,7 @@ app.use(colaboradoresRoutes);
 app.use(beneficiarioRoutes);
 app.use(maquinarioRouter);
 app.use(servicoRouters);
+app.use(RealizarAgServRouters);
 app.use(tipoMaquinarioRouter); 
 app.use(criarAtivSustRouter);
 const mysql = require("mysql2");
@@ -37,5 +39,6 @@ app.use('/api', colaboradoresRoutes);
 app.use('/api', beneficiarioRoutes);
 app.use('/api', maquinarioRouter);
 app.use('/api', servicoRouters);
+app.use('/api', RealizarAgServRouters);
 app.use('/api', tipoMaquinarioRouter); 
 app.use('/api', criarAtivSustRouter);

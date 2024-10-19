@@ -15,6 +15,21 @@ class ServicoService {
             return dados;
         }
     }
+
+    async obterTipos() {
+        const response = await fetch(`${API_BASE_URL}/servico`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    
+        if (!response.ok) {
+            throw new Error('Erro ao obter os tipos de serviço');
+        }
+        const dados = await response.json();
+        return dados;
+    }
+    
     async adicionar(servicoDados) {
 
         try {
