@@ -37,7 +37,7 @@ class CriarAtivSustController {
             criar_endereco, 
             criar_bairro, 
             criar_numero, 
-            id, // Tipo de Atividade
+            tipoAtividade,  // Agora usamos `tipoAtividade` como no outro controller
             criar_data, 
             criar_horarioInicial, 
             criar_horarioFinal, 
@@ -45,13 +45,13 @@ class CriarAtivSustController {
         } = req.body;
 
         // Verificação de campos obrigatórios
-        if (!criar_nome || !criar_cpf || !criar_contato || !criar_endereco || !criar_bairro || !criar_numero || !id || !criar_data || !criar_horarioInicial || !criar_horarioFinal || !criar_descricao) {
+        if (!criar_nome || !criar_cpf || !criar_contato || !criar_endereco || !criar_bairro || !criar_numero || !tipoAtividade || !criar_data || !criar_horarioInicial || !criar_horarioFinal || !criar_descricao) {
             return res.status(400).json({ message: 'Por favor, informe todos os dados da Atividade Sustentável.' });
         }
 
         try {
-            const tipoAtividade = new AtividadeModel();
-            const tipoAtividadeData = await tipoAtividade.obterPorId(id);
+            const atividadeModel = new AtividadeModel();
+            const tipoAtividadeData = await atividadeModel.obterPorId(tipoAtividade); // Certifique-se de que estamos buscando pelo ID correto
 
             if (!tipoAtividadeData) {
                 return res.status(400).json({ message: 'Tipo de Atividade Sustentável inválido.' });
@@ -66,7 +66,7 @@ class CriarAtivSustController {
                 criar_endereco,
                 criar_bairro,
                 criar_numero,
-                id,
+                tipoAtividade, // ID do tipo de atividade
                 criar_data,
                 criar_horarioInicial,
                 criar_horarioFinal,
@@ -91,7 +91,7 @@ class CriarAtivSustController {
             criar_endereco,
             criar_bairro,
             criar_numero,
-            tipoAtividade,
+            tipoAtividade,  // Usamos `tipoAtividade` como no outro controller
             criar_data,
             criar_horarioInicial,
             criar_horarioFinal,
@@ -114,7 +114,7 @@ class CriarAtivSustController {
                 criar_endereco,
                 criar_bairro,
                 criar_numero,
-                tipoAtividade,
+                tipoAtividade,  // ID do tipo de atividade
                 criar_data,
                 criar_horarioInicial,
                 criar_horarioFinal,

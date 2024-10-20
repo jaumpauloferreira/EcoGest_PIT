@@ -1,43 +1,22 @@
 const API_BASE_URL = "http://localhost:3001";
 
 class AtivSustService {
-    // Obter todas as atividades
+    // Obter todas as atividades sustentáveis
     async obterTodos() {
-        try {
-            const response = await fetch(`${API_BASE_URL}/criarativsust`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Erro ao obter todas as atividades');
+        const response = await fetch(`${API_BASE_URL}/criarativsust`, {
+            headers: {
+                'Content-Type': 'application/json'
             }
+        });
 
-            const dados = await response.json();
-            return dados;
-        } catch (error) {
-            console.error('Erro ao obter todas as atividades:', error);
-            throw error;
+        if (!response.ok) {
+            throw new Error('Erro ao obter todas as atividades sustentáveis');
         }
+        const dados = await response.json();
+        return dados;
     }
 
-    // Obter tipos de atividades
-    async obterTipos() {
-        try {
-          const response = await fetch('http://localhost:3001/cadtipoativsust');
-          if (!response.ok) {
-            throw new Error('Erro ao buscar tipos de atividades');
-          }
-          return await response.json();
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      }
-      
-
-    // Adicionar uma nova atividade
+    // Adicionar uma nova atividade sustentável
     async adicionar(atividadeDados) {
         try {
             const response = await fetch(`${API_BASE_URL}/criarativsust`, {
@@ -47,74 +26,55 @@ class AtivSustService {
                 },
                 body: JSON.stringify(atividadeDados)
             });
-    
+
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Erro ao adicionar atividade:', errorData);
-                throw new Error(`Erro ao adicionar atividade: ${errorData.message}`);
+                const errorResponse = await response.json();
+                throw new Error(`Erro ao adicionar a atividade sustentável: ${errorResponse.message || 'Erro desconhecido'}`);
             }
-    
-            const dados = await response.json();
-            return dados;
+
+            return await response.json(); // Retorna a resposta do backend em caso de sucesso
         } catch (error) {
-            console.error('Erro ao adicionar atividade:', error);
-            throw error;
+            console.error(error);
+            throw error; // Propaga o erro para ser tratado pelo chamador
         }
     }
 
-    // Atualizar uma atividade existente e limpar o formulário
-    async atualizar(idAtividade, atividadeDados, limparFormulario) {
+    // Atualizar uma atividade sustentável existente
+    async atualizar(idAtividade, atividadeDados) {
         try {
             const response = await fetch(`${API_BASE_URL}/criarativsust/${idAtividade}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(atividadeDados),
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Erro ao atualizar atividade:', errorData);
-                throw new Error(`Erro ao atualizar atividade: ${errorData.message}`);
-            }
-    
-            const dadosAtualizados = await response.json();
-    
-            if (limparFormulario) {
-                limparFormulario();  // Limpa o formulário após a atualização
-            }
-    
-            return dadosAtualizados;
-        } catch (error) {
-            console.error('Erro ao atualizar atividade:', error);
-            throw error;
-        }
-    }
-    
-
-    // Obter uma atividade por ID
-    async obterPorId(tipo_id) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/criarativsust/${tipo_id}`, {
-                headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify(atividadeDados)
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao obter a atividade');
+                const errorResponse = await response.json();
+                throw new Error(`Erro ao atualizar a atividade sustentável: ${errorResponse.message || 'Erro desconhecido'}`);
             }
-
-            const dados = await response.json();
-            return dados;
         } catch (error) {
-            console.error('Erro ao obter a atividade:', error);
             throw error;
         }
     }
 
-    // Excluir uma atividade
+    // Obter uma atividade sustentável por ID
+    async obterPorId(id) {
+        const response = await fetch(`${API_BASE_URL}/criarativsust/${id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao obter a atividade sustentável por ID');
+        }
+        const dados = await response.json();
+        return dados;
+    }
+
+    // Excluir uma atividade sustentável
     async excluir(idAtividade) {
         try {
             const response = await fetch(`${API_BASE_URL}/criarativsust/${idAtividade}`, {
@@ -122,35 +82,41 @@ class AtivSustService {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Erro ao excluir atividade:', errorData);
-                throw new Error(`Erro ao excluir atividade: ${errorData.message}`);
+                throw new Error('Erro ao excluir a atividade sustentável');
             }
         } catch (error) {
-            console.error('Erro ao excluir atividade:', error);
             throw error;
         }
     }
 
-    // Filtrar atividades por termo de busca
+    // Filtrar atividades sustentáveis por termo de busca
     async filtrar(termoBusca) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/criarativsust/filtrar/${termoBusca}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Erro ao filtrar atividades');
+        const response = await fetch(`${API_BASE_URL}/criarativsust/filtrar/${termoBusca}`, {
+            headers: {
+                'Content-Type': 'application/json'
             }
+        });
 
-            const dados = await response.json();
-            return dados;
-        } catch (error) {
-            console.error('Erro ao filtrar atividades:', error);
-            throw error;
+        if (!response.ok) {
+            throw new Error('Erro ao filtrar as atividades sustentáveis');
         }
+        const dados = await response.json();
+        return dados;
+    }
+
+    // Obter tipos de atividades
+    async obterTipos() {
+        const response = await fetch(`${API_BASE_URL}/cadtipoativsust`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao obter tipos de atividades sustentáveis');
+        }
+        const dados = await response.json();
+        return dados;
     }
 }
 

@@ -92,34 +92,34 @@ async adicionar() {
 
 
     // Método atualizar ajustado
-    async atualizar() {
-        const dadosServico = this.toJSON();
+    async atualizar(tipoServicoId) {
+        const dadosServico = this.toJSON(); // Se não quiser modificar, pode usar como está
         const query = `
-            UPDATE realizarAgServ SET 
-                nomeSolicitante = ?, 
-                cpfSolicitante = ?, 
-                contatoSolicitante = ?, 
-                endereco = ?, 
-                bairro = ?, 
-                numero = ?, 
-                id = ?, 
-                data = ?, 
-                horario = ?, 
-                descricao = ?
-            WHERE id = ?
+            UPDATE realizaragserv SET 
+                agserv_nomeSolicitante = ?, 
+                agserv_cpfSolicitante = ?, 
+                agserv_contatoSolicitante = ?, 
+                agserv_endereco = ?, 
+                agserv_bairro = ?, 
+                agserv_numero = ?, 
+                agserv_data = ?, 
+                agserv_horario = ?, 
+                agserv_descricao = ?, 
+                agserv_tipoServico_id = ?  -- Atualizando o tipo de serviço
+            WHERE agserv_id = ?
         `;
     
         const valores = [
-            dadosServico.nomeSolicitante,
-            dadosServico.cpfSolicitante,
-            dadosServico.contatoSolicitante,
-            dadosServico.endereco,
-            dadosServico.bairro,
-            dadosServico.numero,
-            dadosServico.id,
-            dadosServico.data,
-            dadosServico.horario,
-            dadosServico.descricao,
+            dadosServico.agserv_nomeSolicitante,
+            dadosServico.agserv_cpfSolicitante,
+            dadosServico.agserv_contatoSolicitante,
+            dadosServico.agserv_endereco,
+            dadosServico.agserv_bairro,
+            dadosServico.agserv_numero,
+            dadosServico.agserv_data,
+            dadosServico.agserv_horario,
+            dadosServico.agserv_descricaoServico, // Aqui deve ser agserv_descricaoServico
+            tipoServicoId,
             this.#id
         ];
     
@@ -155,13 +155,16 @@ async adicionar() {
     }
 
     async obterPorId(id) {
-        const result = await database.ExecutaComando('SELECT * FROM realizarAgServ WHERE id = ?', [id]);
-        return result[0];
+        const result = await database.ExecutaComando('SELECT * FROM realizarAgServ WHERE agserv_id = ?', [id]);
+        console.log('Resultado da consulta por ID:', result); // Log do resultado da consulta
+        return result[0]; // Retorna o primeiro resultado
     }
 
     async excluir() {
-        await database.ExecutaComandoNonQuery('DELETE FROM realizarAgServ WHERE id = ?', [this.#id]);
+        console.log('ID usado para exclusão no model:', this.#id); // Verifique o valor do ID
+        await database.ExecutaComandoNonQuery('DELETE FROM realizarAgServ WHERE agserv_id = ?', [this.#id]); // Corrigido para agserv_id
     }
+    
 
     async filtrar(termoBusca) {
         const servicos = await database.ExecutaComando('SELECT * FROM realizarAgServ WHERE nomeSolicitante LIKE ?', [`%${termoBusca}%`]);

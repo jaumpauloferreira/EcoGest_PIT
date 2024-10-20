@@ -13,7 +13,7 @@ import {
 import { FaListAlt, FaSave, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AtivSustService from "../../services/AtivSustService.js";
-import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.js";
+import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.jsx";
 
 const ativSustService = new AtivSustService(); // Instância do serviço
 
@@ -512,7 +512,7 @@ function CriarAtivSust() {
             </Form>
 
             {mostrarTabela && listaAtividades && listaAtividades.length > 0 ? (
-              <Table className="border-success mt-2">
+              <Table className="striped bordered hover">
                 <thead>
                   <tr>
                     <th>ID</th>

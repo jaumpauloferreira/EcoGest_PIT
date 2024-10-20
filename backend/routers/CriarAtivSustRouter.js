@@ -1,20 +1,26 @@
 const CriarAtivSustController = require('../controller/CriarAtivSustController');
-const criarAtivSustController = new CriarAtivSustController(); // Cria uma instância do controlador
+const criarAtivSustController = new CriarAtivSustController(); // Instância do controlador
 const express = require('express');
 const router = express.Router();
 
-// Define as rotas e associa com os métodos do controller
+// Rotas associadas aos métodos do controlador de atividades sustentáveis
+
+// Rota para obter todas as atividades sustentáveis
 router.get('/criarativsust', criarAtivSustController.obterTodos.bind(criarAtivSustController));
+
+// Rota para obter uma atividade sustentável por ID
 router.get('/criarativsust/:id', criarAtivSustController.obterPorId.bind(criarAtivSustController));
+
+// Rota para adicionar uma nova atividade sustentável
 router.post('/criarativsust', criarAtivSustController.adicionar.bind(criarAtivSustController));
 
-// Atualização de atividade sustentável com o ID vindo da URL
+// Rota para atualizar uma atividade sustentável existente pelo ID
 router.put('/criarativsust/:id', criarAtivSustController.atualizar.bind(criarAtivSustController));
 
-// Exclusão de atividade sustentável com o ID vindo da URL
+// Rota para excluir uma atividade sustentável pelo ID
 router.delete('/criarativsust/:id', criarAtivSustController.excluir.bind(criarAtivSustController));
 
-// Filtro de atividades sustentáveis por termo de busca
+// Rota para filtrar atividades sustentáveis por um termo de busca
 router.get('/criarativsust/filtrar/:termoBusca', criarAtivSustController.filtrar.bind(criarAtivSustController));
 
 module.exports = router;

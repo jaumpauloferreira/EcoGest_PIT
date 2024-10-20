@@ -227,6 +227,14 @@ function NavBar() {
                             </Link>
                         </li>
                     )}
+                    {(isAdmin()) && (
+                        <li className="nav-link px-2 py-3">
+                            <Link to="/update-role">
+                                <FaUserPlus />
+                                <span className="mx-2">Alterar Nível de Acesso</span>
+                            </Link>
+                        </li>
+                    )}
                 </ul>
 
                 {/* Exibir email e nível de acesso */}

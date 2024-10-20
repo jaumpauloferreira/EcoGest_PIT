@@ -17,6 +17,8 @@ import Login from './Componentes/Login';
 import Register from './Componentes/Register';
 import ProtectedRoute from './Componentes/ProtectedRoute';
 
+import UpdateUserRole from './Componentes/atualizarrole';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />, // Rota para o registro
+  },
+  {
+    path: '/update-role',
+    element: <UpdateUserRole />, // Rota para o registro
   },
   {
     element: <NavBar />, 

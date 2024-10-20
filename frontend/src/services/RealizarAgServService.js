@@ -78,7 +78,7 @@ class RealizarAgServService {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao excluir o agendamento');
+                throw new Error('Erro ao excluir o Agendamento');
             }
         } catch (error) {
             throw error;
