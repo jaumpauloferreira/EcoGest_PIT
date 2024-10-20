@@ -10,7 +10,7 @@ import {
   Table,
   FormLabel,
 } from "react-bootstrap";
-import { FaListAlt, FaSave, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
+import { FaListAlt, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AtivSustService from "../../services/AtivSustService.js";
 import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.jsx";
@@ -206,7 +206,12 @@ function CriarAtivSust() {
       await ativSustService.atualizar(atividade.id, dados);
 
       const atividadesAtualizadas = await ativSustService.obterTodos();
-      setListaAtividades(atividadesAtualizadas);
+      const atividadesComDataFormatada = atividadesAtualizadas.map((atividade) => ({
+        ...atividade,
+        criar_data: formatarData(atividade.criar_data),
+      }));
+
+      setListaAtividades(atividadesComDataFormatada); // Atualiza a lista com as datas formatadas
 
       setSucessoMensagem("Atividade atualizada com sucesso!");
       navigate("/criarativsust");
@@ -566,3 +571,4 @@ function CriarAtivSust() {
 }
 
 export default CriarAtivSust;
+
