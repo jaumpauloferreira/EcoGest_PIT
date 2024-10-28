@@ -16,8 +16,8 @@ import CadTipoMaq from './Paginas/TipoMaquinario/CadTipoMaq';
 import Login from './Componentes/Login';
 import Register from './Componentes/Register';
 import ProtectedRoute from './Componentes/ProtectedRoute';
-
 import UpdateUserRole from './Componentes/atualizarrole';
+import GerenciarCicloServicos from './Paginas/GerenciarCicloServ/GerenciarCicloServicos'; // Adicionando Gerenciar Ciclo de Serviços
 
 const router = createBrowserRouter([
   {
@@ -30,66 +30,70 @@ const router = createBrowserRouter([
   },
   {
     path: '/update-role',
-    element: <UpdateUserRole />, // Rota para o registro
+    element: <UpdateUserRole />, // Rota para atualizar o nível de acesso
   },
   {
-    element: <NavBar />, 
+    element: <NavBar />,
     children: [
       {
         path: '/Componentes',
-        element: <ProtectedRoute> <Home /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <Home /> </ProtectedRoute>, // Rota protegida para Home
       },
       {
         path: '/AtivSustentaveis',
-        element: <ProtectedRoute> <CadAtivSust /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadAtivSust /> </ProtectedRoute>, // Rota protegida para Cadastro de Atividades Sustentáveis
       },
       {
         path: '/CriarAtivSust',
-        element: <ProtectedRoute> <CriarAtivSust /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CriarAtivSust /> </ProtectedRoute>, // Rota protegida para Criar Atividades Sustentáveis
       },
       {
         path: '/AtivSustentaveis/:idAtividade',
-        element: <ProtectedRoute> <CadAtivSust /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadAtivSust /> </ProtectedRoute>, // Rota protegida com ID para Atividades Sustentáveis
       },
       {
         path: '/Beneficiarios',
-        element: <ProtectedRoute> <Beneficiarios/> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <Beneficiarios/> </ProtectedRoute>, // Rota protegida para Beneficiários
       },
       {
         path: '/Colaborador',
-        element: <ProtectedRoute> <FormColab/> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <FormColab/> </ProtectedRoute>, // Rota protegida para Colaboradores
       },
       {
         path: '/colaborador/:idColaborador',
-        element: <ProtectedRoute> <FormColab /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <FormColab /> </ProtectedRoute>, // Rota protegida com ID para Colaboradores
       },
       {
         path: '/TiposDeMaquinario',
-        element: <ProtectedRoute> <CadTipoMaq /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadTipoMaq /> </ProtectedRoute>, // Rota protegida para Tipos de Maquinário
       },
       {
         path: '/TiposDeMaquinario/:idTiposDeMaquinario',
-        element: <ProtectedRoute> <CadTipoMaq /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadTipoMaq /> </ProtectedRoute>, // Rota protegida com ID para Tipos de Maquinário
       },
       {
         path: '/Maquinario',
-        element: <ProtectedRoute> <Maquinario /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <Maquinario /> </ProtectedRoute>, // Rota protegida para Maquinário
       },
       {
         path: '/maquinario/:idMaquinario',
-        element: <ProtectedRoute> <Maquinario /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <Maquinario /> </ProtectedRoute>, // Rota protegida com ID para Maquinário
       },
       {
         path: '/TiposDeServico',
-        element: <ProtectedRoute> <CadTiposServ /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadTiposServ /> </ProtectedRoute>, // Rota protegida para Tipos de Serviço
       },
       {
         path: '/TiposDeServico/:idServico',
-        element: <ProtectedRoute> <CadTiposServ /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <CadTiposServ /> </ProtectedRoute>, // Rota protegida com ID para Tipos de Serviço
       },
       {
         path: '/RealizarAgServ',
-        element: <ProtectedRoute> <RealizarAgServ /> </ProtectedRoute>, // Rota protegida
+        element: <ProtectedRoute> <RealizarAgServ /> </ProtectedRoute>, // Rota protegida para Realizar Agendamento de Serviço
+      },
+      {
+        path: '/GerenciarCicloServicos',
+        element: <ProtectedRoute> <GerenciarCicloServicos /> </ProtectedRoute>, // Rota protegida para Gerenciar Ciclo de Serviços
       },
     ],
   },

@@ -7,13 +7,14 @@ import {
   Table,
   Form,
   Button,
-  FormLabel,
+  InputGroup,
 } from "react-bootstrap";
 import {
   FaListAlt,
   FaEdit,
   FaSearch,
   FaTrashAlt,
+  FaList,
 } from "react-icons/fa";
 import BeneficiariosForm from "./BeneficiariosForm";
 import BeneficiarioService from "../../services/BeneficiarioService";
@@ -41,7 +42,6 @@ function Beneficiarios() {
     // Ordenar os dados por nome
     dados.sort((a, b) => a.nome.localeCompare(b.nome));
     setListaBeneficiarios(dados);
-    setMostrarTabela(true);
   };
 
   const handleFiltrar = async () => {
@@ -49,15 +49,21 @@ function Beneficiarios() {
     setMostrarTabela(true);
   };
 
+  const handleListarTodos = async () => {
+    await listarBeneficiarios();
+    setSearchName("");
+    setMostrarTabela(true);
+  };
+
   const handleExcluir = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir?")) {
       await beneficiarioService.deletarBeneficiario(id);
-      await listarBeneficiarios(searchName); // Atualiza a lista filtrada após exclusão
+      await listarBeneficiarios();
     }
   };
 
   useEffect(() => {
-    listarBeneficiarios(); // Carrega todos os beneficiários ao montar o componente
+    listarBeneficiarios();
   }, []);
 
   const formattedDate = (dateString) => {
@@ -96,30 +102,28 @@ function Beneficiarios() {
       <h3 className="text-center mt-4">Beneficiários Cadastrados</h3>
 
       <Container className="mt-4">
-        <Form className="d-flex justify-content-start mb-4">
-          <FormLabel
-            className="me-2"
-            style={{ fontWeight: "bold", fontSize: "1.2rem" }} // Estilo ajustado para negrito e tamanho da fonte maior
-          >
-            Pesquise
-          </FormLabel>
-          <Form.Control
-            type="text"
-            placeholder="Pesquisar por nome"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="me-2 dark-gray-border"
-          />
-          <Button
-            variant="secondary"
-            onClick={handleFiltrar}
-            disabled={searchName === ""}
-            className="me-2"
-          >
-            <FaSearch />
-          </Button>
+        <Form className="d-flex justify-content-center mb-4">
+          <InputGroup>
+            <Form.Control
+              type="text"
+              placeholder="Pesquisar por nome"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="dark-gray-border"
+            />
+            <Button
+              variant="outline-secondary"
+              onClick={handleFiltrar}
+              disabled={searchName === ""}
+            >
+              <FaSearch style={{ color: "#666666" }} />
+            </Button>
+            
+            <Button variant="secondary" onClick={handleListarTodos}>
+              <FaList /> Listar Todos
+            </Button>
+          </InputGroup>
         </Form>
-
         {mostrarTabela && (
           <Table
             striped
@@ -142,43 +146,35 @@ function Beneficiarios() {
               </tr>
             </thead>
             <tbody>
-              {filteredBeneficiaries.length > 0 ? (
-                filteredBeneficiaries.map((beneficiary, index) => (
-                  <tr key={index}>
-                    <td className="text-center">{beneficiary.id}</td>
-                    <td>{beneficiary.nome}</td>
-                    <td>{beneficiary.cpf}</td>
-                    <td>{beneficiary.contato}</td>
-                    <td>{beneficiary.email}</td>
-                    <td>{beneficiary.endereco}</td>
-                    <td>{beneficiary.bairro}</td>
-                    <td className="text-center">{beneficiary.numero}</td>
-                    <td className="text-center">
-                      {formattedDate(beneficiary.datanascimento)}
-                    </td>
-                    <td className="text-center">
-                      <FaEdit
-                        style={{ cursor: "pointer", color: "blue" }}
-                        onClick={() => handleFillForm(beneficiary)}
-                      />
-                      <FaTrashAlt
-                        style={{
-                          cursor: "pointer",
-                          color: "red",
-                          marginLeft: "10px",
-                        }}
-                        onClick={() => handleExcluir(beneficiary.id)}
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="10" className="text-center">
-                    Nenhum beneficiário encontrado
+              {filteredBeneficiaries.map((beneficiary, index) => (
+                <tr key={index}>
+                  <td className="text-center">{beneficiary.id}</td>
+                  <td>{beneficiary.nome}</td>
+                  <td>{beneficiary.cpf}</td>
+                  <td>{beneficiary.contato}</td>
+                  <td>{beneficiary.email}</td>
+                  <td>{beneficiary.endereco}</td>
+                  <td>{beneficiary.bairro}</td>
+                  <td className="text-center">{beneficiary.numero}</td>
+                  <td className="text-center">
+                    {formattedDate(beneficiary.datanascimento)}
+                  </td>
+                  <td className="text-center">
+                    <FaEdit
+                      style={{ cursor: "pointer", color: "blue" }}
+                      onClick={() => handleFillForm(beneficiary)}
+                    />
+                    <FaTrashAlt
+                      style={{
+                        cursor: "pointer",
+                        color: "red",
+                        marginLeft: "10px",
+                      }}
+                      onClick={() => handleExcluir(beneficiary.id)}
+                    />
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </Table>
         )}
@@ -188,4 +184,5 @@ function Beneficiarios() {
 }
 
 export default Beneficiarios;
+
 

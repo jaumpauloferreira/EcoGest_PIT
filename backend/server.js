@@ -14,15 +14,15 @@ const servicoRouters = require('./routers/ServicoRouters')
 const RealizarAgServRouters = require('./routers/RealizarAgServRoutes')
 const tipoMaquinarioRouter = require('./routers/TipoMaquinarioRouters')
 const criarAtivSustRouter = require('./routers/CriarAtivSustRouter')
+const GerenciarCicloServicoRoutes = require('./routers/GerenciarCicloServicoRoutes');
+
 const app = express();
 const port = 3001;
 app.use(express.json());
 app.use(cors());
 
-
 app.use('/api/auth', authRoutes)
 app.use('/api/relatorios', relatoriosRoute);
-
 
 app.use(atividadeRouters);
 app.use(colaboradoresRoutes);
@@ -42,3 +42,15 @@ app.use('/api', servicoRouters);
 app.use('/api', RealizarAgServRouters);
 app.use('/api', tipoMaquinarioRouter); 
 app.use('/api', criarAtivSustRouter);
+app.use('/api', GerenciarCicloServicoRoutes);
+
+
+
+
+
+
+
+
+
+
+

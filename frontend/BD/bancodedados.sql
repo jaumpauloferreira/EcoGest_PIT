@@ -1,7 +1,7 @@
 -- Criação do banco de dados
-CREATE DATABASE IF NOT EXISTS `cadastroativsustentavel` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE IF NOT EXISTS `sistemaecogest` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 
-USE `cadastroativsustentavel`;
+USE `sistemaecogest`;
 
 -- Tabela beneficiario
 DROP TABLE IF EXISTS `beneficiario`;
@@ -21,10 +21,10 @@ CREATE TABLE `beneficiario` (
 
 -- Inserção de dados na tabela beneficiario
 INSERT INTO `beneficiario` (`id`, `nome`, `cpf`, `contato`, `email`, `endereco`, `bairro`, `numero`, `datanascimento`) VALUES
-(1, 'João Paulo Ferreira da Silva', '336.360.788-73', '(14) 99878-4400', 'joaopaulo@hotmail.com', 'Rua Eleazar', 'Eldorado', 61, '1985-10-08'),
-(2, 'Pedro da Silva Sauro', '080.370.774-18', '(44) 99541-2542', 'joaoss@gmail.com', 'Rua das pedras verdes', 'Centro', 188, '1991-03-16'),
-(3, 'Maria das Dores', '123.456.549-87', '(13) 45695-8451', 'mariadasdores@hotmail.com', 'Rua das rosas vermelhas', 'Jaboticabal', 215, '1985-06-12'),
-(4, 'Ana Julia Medeiros', '654.123.987-45', '(43) 99854-7526', 'anajuliam@outlook.com', 'Avenida Brasil', 'Centro', 123, '1994-04-03');
+(1, 'João Paulo Ferreira', '336.360.788-73', '(14) 99878-4400', 'joaopaulo@hotmail.com', 'Rua Eleazar', 'Eldorado', 61, '1985-10-08'),
+(2, 'Ana Clara Ferreira', '080.370.774-18', '(44) 99541-2542', 'anaclara@hotmail.com', 'Rua das pedras verdes', 'Centro', 188, '1991-03-16'),
+(3, 'Taisa Mariana', '123.456.549-87', '(13) 45695-8451', 'taisa@hotmail.com', 'Rua das rosas vermelhas', 'Jaboticabal', 215, '1985-06-12'),
+(4, 'Neide de Fátima', '654.123.987-45', '(43) 99854-7526', 'neidefatima@hotmail.com', 'Avenida Brasil', 'Centro', 123, '1994-04-03');
 
 -- Tabela cadastrotiposdemaquinario
 DROP TABLE IF EXISTS `cadastrotiposdemaquinario`;
@@ -218,4 +218,45 @@ INSERT INTO `realizaragserv` VALUES
 (1,'Carlos Eduardo','12345678901','(11) 91234-5678','Rua Exemplo, 123','Centro',45,1,'2024-10-20','09:00:00','Serviço de poda de árvores em área pública'),
 (2,'Ana Maria','98765432100','(22) 98765-4321','Av. Brasil, 321','Zona Sul',100,3,'2024-10-21','10:00:00','Liberação de mudas de árvores para comunidade'),
 (3,'Roberto Silva','11122233344','(33) 99999-8888','Rua das Flores, 789','Jardim Primavera',120,4,'2024-10-22','11:30:00','Medição e análise da qualidade do ar em área industrial');
+
+-- Tabela servico (para Gerenciar Ciclo de Serviços)
+DROP TABLE IF EXISTS `servico`;
+CREATE TABLE `servico` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `status` VARCHAR(50) NOT NULL,
+  `data_inicio` DATE NOT NULL,
+  `data_fim` DATE,
+  `descricao` VARCHAR(1000),
+  `beneficiario_id` INT NOT NULL,
+  `colaborador_id` INT NOT NULL,
+  `tipo_servico_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`beneficiario_id`) REFERENCES `beneficiario`(`id`),
+  FOREIGN KEY (`colaborador_id`) REFERENCES `colaboradores`(`id`),
+  FOREIGN KEY (`tipo_servico_id`) REFERENCES `cadastrotiposdeservico`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Inserção de dados na tabela servico
+INSERT INTO `servico` (`status`, `data_inicio`, `data_fim`, `descricao`, `beneficiario_id`, `colaborador_id`, `tipo_servico_id`) VALUES
+('Pendente', '2024-10-20', NULL, 'Descrição do serviço pendente', 1, 2, 1),
+('Em Andamento', '2024-10-21', NULL, 'Serviço de poda em andamento', 2, 3, 4),
+('Concluído', '2024-10-15', '2024-10-18', 'Serviço de coleta de lixo finalizado', 3, 1, 3);
+
+-- Tabela historico_servico (para registrar histórico de alterações de status)
+DROP TABLE IF EXISTS `historico_servico`;
+CREATE TABLE `historico_servico` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `servico_id` INT NOT NULL,
+  `status` VARCHAR(50) NOT NULL,
+  `alterado_por` VARCHAR(100),
+  `data_alteracao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`servico_id`) REFERENCES `servico`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Inserção de dados na tabela historico_servico
+INSERT INTO `historico_servico` (`servico_id`, `status`, `alterado_por`) VALUES
+(1, 'Pendente', 'João Paulo'),
+(1, 'Em Andamento', 'Maria Cleusa'),
+(2, 'Pendente', 'Carlos Eduardo');
 
