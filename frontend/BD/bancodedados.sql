@@ -260,3 +260,4 @@ INSERT INTO `historico_servico` (`servico_id`, `status`, `alterado_por`) VALUES
 (1, 'Em Andamento', 'Maria Cleusa'),
 (2, 'Pendente', 'Carlos Eduardo');
 
+
