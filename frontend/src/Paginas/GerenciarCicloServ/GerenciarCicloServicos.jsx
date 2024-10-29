@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Table, Container, Alert, Modal, Form } from 'react-bootstrap';
-import { FaInfoCircle, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaInfoCircle, FaTrash, FaPlus, FaSave } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
 import { format, parseISO } from 'date-fns';
 
@@ -16,6 +16,7 @@ const GerenciarCicloServicos = () => {
   const [servicoParaExcluir, setServicoParaExcluir] = useState(null);
   const [novoServicoModal, setNovoServicoModal] = useState(false);
   const [novoServico, setNovoServico] = useState({ tipo_servico: '', solicitante: '', data_inicio: '' });
+  const [statusAtualizado, setStatusAtualizado] = useState(''); // Estado para o novo status
 
   useEffect(() => {
     carregarServicos();
@@ -34,12 +35,25 @@ const GerenciarCicloServicos = () => {
     GerenciarCicloServService.obterPorId(id)
       .then(data => {
         setServicoSelecionado(data);
+        setStatusAtualizado(data.status); // Define o status atual para ser atualizado
       })
       .catch(() => setErro('Erro ao carregar detalhes do serviço'));
 
     GerenciarCicloServService.obterHistorico(id)
       .then(data => setHistorico(data))
       .catch(() => setErro('Erro ao carregar histórico'));
+  };
+
+  const atualizarStatus = () => {
+    if (servicoSelecionado) {
+      GerenciarCicloServService.atualizarStatus(servicoSelecionado.id, statusAtualizado)
+        .then(() => {
+          setSucessoMensagem('Status salvo com sucesso!');
+          carregarServicos();
+          setServicoSelecionado(null); // Fecha a seção de detalhes
+        })
+        .catch(() => setErro('Erro ao atualizar status do serviço'));
+    }
   };
 
   const confirmarExclusao = (servico) => {
@@ -148,7 +162,23 @@ const GerenciarCicloServicos = () => {
                     {servicoSelecionado.data_fim && (
                       <p><strong>Data de Conclusão:</strong> {new Date(servicoSelecionado.data_fim).toLocaleDateString()}</p>
                     )}
-                    <h5>Histórico de Status</h5>
+                    <h5>Atualizar Status</h5>
+                    <Form.Group controlId="statusAtualizado">
+                      <Form.Label>Novo Status</Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={statusAtualizado}
+                        onChange={(e) => setStatusAtualizado(e.target.value)}
+                      >
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em Andamento">Em Andamento</option>
+                        <option value="Concluído">Concluído</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <Button variant="primary" onClick={atualizarStatus} className="mt-3">
+                      <FaSave /> Salvar Status
+                    </Button>
+                    <h5 className="mt-4">Histórico de Status</h5>
                     <Table striped bordered>
                       <thead>
                         <tr>
@@ -230,5 +260,3 @@ const GerenciarCicloServicos = () => {
 };
 
 export default GerenciarCicloServicos;
-
-

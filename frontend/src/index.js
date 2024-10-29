@@ -17,8 +17,7 @@ import Login from './Componentes/Login';
 import Register from './Componentes/Register';
 import ProtectedRoute from './Componentes/ProtectedRoute';
 import UpdateUserRole from './Componentes/atualizarrole';
-import GerenciarCicloServicos from './Paginas/GerenciarCicloServ/GerenciarCicloServicos';
-import TramitarServicosAgendados from './Paginas/TramitarServicosAgendados/TramitarServicosAgendados'; // Importação do novo componente
+import GerenciarCicloServicos from './Paginas/GerenciarCicloServ/GerenciarCicloServicos'; // Adicionando Gerenciar Ciclo de Serviços
 
 const router = createBrowserRouter([
   {
@@ -95,10 +94,6 @@ const router = createBrowserRouter([
       {
         path: '/GerenciarCicloServicos',
         element: <ProtectedRoute> <GerenciarCicloServicos /> </ProtectedRoute>, // Rota protegida para Gerenciar Ciclo de Serviços
-      },
-      {
-        path: '/TramitarServicosAgendados',
-        element: <ProtectedRoute> <TramitarServicosAgendados /> </ProtectedRoute>, // Rota protegida para Tramitar Serviços Agendados
       },
     ],
   },

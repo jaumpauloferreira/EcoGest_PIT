@@ -15,6 +15,8 @@ const RealizarAgServRouters = require('./routers/RealizarAgServRoutes')
 const tipoMaquinarioRouter = require('./routers/TipoMaquinarioRouters')
 const criarAtivSustRouter = require('./routers/CriarAtivSustRouter')
 const GerenciarCicloServicoRoutes = require('./routers/GerenciarCicloServicoRoutes');
+const secretariaRouters = require('./routers/SecretariaRouters')
+const TramitarServRouter = require('./routers/TramitarServRouters')
 
 const app = express();
 const port = 3001;
@@ -32,8 +34,12 @@ app.use(servicoRouters);
 app.use(RealizarAgServRouters);
 app.use(tipoMaquinarioRouter); 
 app.use(criarAtivSustRouter);
+app.use(secretariaRouters);
+app.use(TramitarServRouter);
+
 const mysql = require("mysql2");
 app.listen(port, () => console.log('Servidor rodando na porta ' + port));
+
 app.use('/api', atividadeRouters); 
 app.use('/api', colaboradoresRoutes);
 app.use('/api', beneficiarioRoutes);
@@ -43,6 +49,8 @@ app.use('/api', RealizarAgServRouters);
 app.use('/api', tipoMaquinarioRouter); 
 app.use('/api', criarAtivSustRouter);
 app.use('/api', GerenciarCicloServicoRoutes);
+app.use('./api', secretariaRouters);
+app.use('./api', TramitarServRouter);
 
 
 
