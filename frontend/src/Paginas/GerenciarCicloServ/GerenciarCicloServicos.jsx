@@ -1,7 +1,10 @@
+// Local: frontend/components/GerenciarCicloServicos.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Table, Container, Alert, Modal, Form } from 'react-bootstrap';
-import { FaPlay, FaCheck, FaInfoCircle, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaInfoCircle, FaTrash, FaPlus } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
+import { format, parseISO } from 'date-fns';
 
 const GerenciarCicloServicos = () => {
   const [servicos, setServicos] = useState([]);
@@ -27,23 +30,11 @@ const GerenciarCicloServicos = () => {
       .catch(() => setErro('Erro ao carregar serviços'));
   };
 
-  const atualizarStatus = (id, novoStatus) => {
-    GerenciarCicloServService.atualizarStatus(id, novoStatus)
-      .then(() => {
-        setSucessoMensagem('Status atualizado com sucesso!');
-        carregarServicos();
-      })
-      .catch(() => setErro('Erro ao atualizar status'));
-
-    setTimeout(() => {
-      setSucessoMensagem('');
-      setErro('');
-    }, 3000);
-  };
-
   const mostrarDetalhes = (id) => {
     GerenciarCicloServService.obterPorId(id)
-      .then(data => setServicoSelecionado(data))
+      .then(data => {
+        setServicoSelecionado(data);
+      })
       .catch(() => setErro('Erro ao carregar detalhes do serviço'));
 
     GerenciarCicloServService.obterHistorico(id)
@@ -64,11 +55,6 @@ const GerenciarCicloServicos = () => {
         setShowModal(false);
       })
       .catch(() => setErro('Erro ao excluir serviço'));
-
-    setTimeout(() => {
-      setSucessoMensagem('');
-      setErro('');
-    }, 3000);
   };
 
   const abrirNovoServicoModal = () => {
@@ -100,7 +86,6 @@ const GerenciarCicloServicos = () => {
         {erro && <Alert variant="danger" className="mt-3">{erro}</Alert>}
         {sucessoMensagem && <Alert variant="success" className="mt-3">{sucessoMensagem}</Alert>}
 
-        {/* Botão para cadastrar novo serviço */}
         <Button variant="success" className="mb-3" onClick={abrirNovoServicoModal}>
           <FaPlus /> Cadastrar Novo Serviço
         </Button>
@@ -111,40 +96,26 @@ const GerenciarCicloServicos = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Serviço</th>
-                  <th>Solicitante</th>
-                  <th>Status</th>
-                  <th>Data de Início</th>
+                  <th>ID</th>
+                  <th>Nome do Solicitante</th>
+                  <th>Contato</th>
+                  <th>Data Serv.</th>
+                  <th>Horário</th>
+                  <th>Tipo do Serviço</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {servicos.map(servico => (
+                {servicos.map((servico) => (
                   <tr key={servico.id}>
-                    <td>{servico.tipo_servico}</td>
-                    <td>{servico.solicitante}</td>
-                    <td>{servico.status}</td>
-                    <td>{new Date(servico.data_inicio).toLocaleDateString()}</td>
+                    <td>{servico.id}</td>
+                    <td>{servico.solicitante || 'Não disponível'}</td>
+                    <td>{servico.contato || 'Não disponível'}</td>
+                    <td>{servico.data_inicio ? format(parseISO(servico.data_inicio), 'dd/MM/yyyy') : 'Data não disponível'}</td>
+                    <td>{servico.horario || 'Não disponível'}</td>
+                    <td>{servico.tipo_servico || 'Não disponível'}</td>
                     <td>
                       <div className="d-flex">
-                        {servico.status === 'Aguardando' && (
-                          <Button
-                            variant="link"
-                            onClick={() => atualizarStatus(servico.id, 'Em andamento')}
-                            className="text-primary fs-5"
-                          >
-                            <FaPlay /> Iniciar
-                          </Button>
-                        )}
-                        {servico.status === 'Em andamento' && (
-                          <Button
-                            variant="link"
-                            onClick={() => atualizarStatus(servico.id, 'Concluído')}
-                            className="text-success fs-5"
-                          >
-                            <FaCheck /> Concluir
-                          </Button>
-                        )}
                         <Button
                           variant="link"
                           onClick={() => mostrarDetalhes(servico.id)}
@@ -171,9 +142,9 @@ const GerenciarCicloServicos = () => {
                 <Card>
                   <Card.Header as="h4">Detalhes do Serviço: {servicoSelecionado.tipo_servico}</Card.Header>
                   <Card.Body>
-                    <p><strong>Solicitante:</strong> {servicoSelecionado.solicitante}</p>
-                    <p><strong>Status Atual:</strong> {servicoSelecionado.status}</p>
-                    <p><strong>Data de Início:</strong> {new Date(servicoSelecionado.data_inicio).toLocaleDateString()}</p>
+                    <p><strong>Solicitante:</strong> {servicoSelecionado.solicitante || 'Não disponível'}</p>
+                    <p><strong>Status Atual:</strong> {servicoSelecionado.status || 'Não disponível'}</p>
+                    <p><strong>Data de Início:</strong> {servicoSelecionado.data_inicio ? new Date(servicoSelecionado.data_inicio).toLocaleDateString() : 'Data não disponível'}</p>
                     {servicoSelecionado.data_fim && (
                       <p><strong>Data de Conclusão:</strong> {new Date(servicoSelecionado.data_fim).toLocaleDateString()}</p>
                     )}
@@ -189,9 +160,9 @@ const GerenciarCicloServicos = () => {
                       <tbody>
                         {historico.map((registro, index) => (
                           <tr key={index}>
-                            <td>{registro.status}</td>
-                            <td>{new Date(registro.data_alteracao).toLocaleDateString()}</td>
-                            <td>{registro.alterado_por}</td>
+                            <td>{registro.status || 'Não disponível'}</td>
+                            <td>{registro.data_alteracao ? new Date(registro.data_alteracao).toLocaleDateString() : 'Data não disponível'}</td>
+                            <td>{registro.alterado_por || 'Não disponível'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -203,7 +174,6 @@ const GerenciarCicloServicos = () => {
           </Card.Body>
         </Card>
 
-        {/* Modal para cadastrar novo serviço */}
         <Modal show={novoServicoModal} onHide={fecharNovoServicoModal}>
           <Modal.Header closeButton>
             <Modal.Title>Cadastrar Novo Serviço</Modal.Title>
@@ -260,3 +230,5 @@ const GerenciarCicloServicos = () => {
 };
 
 export default GerenciarCicloServicos;
+
+

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './NavBar.css';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FaClipboardList, FaRegUser, FaUserPlus, FaBars, FaHome, FaTractor, FaCogs, FaSignOutAlt, FaRegClone, FaTasks } from 'react-icons/fa';
+import { FaClipboardList, FaRegUser, FaUserPlus, FaBars, FaHome, FaTractor, FaCogs, FaSignOutAlt, FaRegClone, FaTasks, FaExchangeAlt } from 'react-icons/fa'; // Adicione FaExchangeAlt
 import { Container } from 'react-bootstrap';
 import Footer from '../Componentes/Footer.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -72,6 +72,14 @@ function NavBar() {
                             <Link to="/RealizarAgServ">
                                 <FaRegClone />
                                 <span className="mx-2">Agendar Serviços</span>
+                            </Link>
+                        </li>
+                    )}
+                    {(isAdmin() || isDirector() || isColab()) && (
+                        <li className="nav-link px-2 py-3">
+                            <Link to="/TramitarServicosAgendados">
+                                <FaExchangeAlt />
+                                <span className="mx-2">Tramitar Serv Agendados</span>
                             </Link>
                         </li>
                     )}
