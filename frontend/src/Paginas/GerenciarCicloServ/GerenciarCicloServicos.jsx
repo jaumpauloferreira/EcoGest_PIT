@@ -16,7 +16,7 @@ const GerenciarCicloServicos = () => {
   const [servicoParaExcluir, setServicoParaExcluir] = useState(null);
   const [novoServicoModal, setNovoServicoModal] = useState(false);
   const [novoServico, setNovoServico] = useState({ tipo_servico: '', solicitante: '', data_inicio: '' });
-  const [statusAtualizado, setStatusAtualizado] = useState(''); // Estado para o novo status
+  const [statusAtualizado, setStatusAtualizado] = useState('');
 
   useEffect(() => {
     carregarServicos();
@@ -35,7 +35,7 @@ const GerenciarCicloServicos = () => {
     GerenciarCicloServService.obterPorId(id)
       .then(data => {
         setServicoSelecionado(data);
-        setStatusAtualizado(data.status); // Define o status atual para ser atualizado
+        setStatusAtualizado(data.status);
       })
       .catch(() => setErro('Erro ao carregar detalhes do serviço'));
 
@@ -50,7 +50,12 @@ const GerenciarCicloServicos = () => {
         .then(() => {
           setSucessoMensagem('Status salvo com sucesso!');
           carregarServicos();
-          setServicoSelecionado(null); // Fecha a seção de detalhes
+          setServicoSelecionado(null);
+
+          // Configura o tempo de exibição da mensagem de sucesso
+          setTimeout(() => {
+            setSucessoMensagem('');
+          }, 5000);
         })
         .catch(() => setErro('Erro ao atualizar status do serviço'));
     }
@@ -67,6 +72,10 @@ const GerenciarCicloServicos = () => {
         setSucessoMensagem('Serviço excluído com sucesso!');
         carregarServicos();
         setShowModal(false);
+
+        setTimeout(() => {
+          setSucessoMensagem('');
+        }, 5000);
       })
       .catch(() => setErro('Erro ao excluir serviço'));
   };
@@ -86,6 +95,10 @@ const GerenciarCicloServicos = () => {
         setSucessoMensagem('Novo serviço adicionado com sucesso!');
         carregarServicos();
         fecharNovoServicoModal();
+
+        setTimeout(() => {
+          setSucessoMensagem('');
+        }, 5000);
       })
       .catch(() => setErro('Erro ao adicionar novo serviço'));
   };
@@ -125,7 +138,7 @@ const GerenciarCicloServicos = () => {
                     <td>{servico.id}</td>
                     <td>{servico.solicitante || 'Não disponível'}</td>
                     <td>{servico.contato || 'Não disponível'}</td>
-                    <td>{servico.data_inicio ? format(parseISO(servico.data_inicio), 'dd/MM/yyyy') : 'Data não disponível'}</td>
+                    <td>{servico.data_servico ? format(parseISO(servico.data_servico), 'dd/MM/yyyy') : 'Data não disponível'}</td>
                     <td>{servico.horario || 'Não disponível'}</td>
                     <td>{servico.tipo_servico || 'Não disponível'}</td>
                     <td>
@@ -158,9 +171,9 @@ const GerenciarCicloServicos = () => {
                   <Card.Body>
                     <p><strong>Solicitante:</strong> {servicoSelecionado.solicitante || 'Não disponível'}</p>
                     <p><strong>Status Atual:</strong> {servicoSelecionado.status || 'Não disponível'}</p>
-                    <p><strong>Data de Início:</strong> {servicoSelecionado.data_inicio ? new Date(servicoSelecionado.data_inicio).toLocaleDateString() : 'Data não disponível'}</p>
+                    <p><strong>Data de Início:</strong> {servicoSelecionado.data_servico ? format(parseISO(servicoSelecionado.data_servico), 'dd/MM/yyyy') : 'Data não disponível'}</p>
                     {servicoSelecionado.data_fim && (
-                      <p><strong>Data de Conclusão:</strong> {new Date(servicoSelecionado.data_fim).toLocaleDateString()}</p>
+                      <p><strong>Data de Conclusão:</strong> {format(parseISO(servicoSelecionado.data_fim), 'dd/MM/yyyy')}</p>
                     )}
                     <h5>Atualizar Status</h5>
                     <Form.Group controlId="statusAtualizado">
@@ -191,7 +204,7 @@ const GerenciarCicloServicos = () => {
                         {historico.map((registro, index) => (
                           <tr key={index}>
                             <td>{registro.status || 'Não disponível'}</td>
-                            <td>{registro.data_alteracao ? new Date(registro.data_alteracao).toLocaleDateString() : 'Data não disponível'}</td>
+                            <td>{registro.data_alteracao ? format(parseISO(registro.data_alteracao), 'dd/MM/yyyy') : 'Data não disponível'}</td>
                             <td>{registro.alterado_por || 'Não disponível'}</td>
                           </tr>
                         ))}

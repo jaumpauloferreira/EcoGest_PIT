@@ -1,4 +1,3 @@
-// TramitarServModel.js
 const Database = require("../database");
 const database = new Database();
 
@@ -10,15 +9,35 @@ class TramitarServModel {
         this.msg_motivo = msg_motivo;
     }
 
+    // obterTodos precisa mesclar os dados das tabelas para funcinar
+    // corrigido: dados de id_servico estavam sendo puxados do endpoint /servico
+    // agora estão sendo puxados de agserv_servico_id
     async obterTodos() {
-        const listaTramitacoes = await database.ExecutaComando(
-            `SELECT t.*, s.nome_secretaria 
-             FROM tramitarserv t
-             INNER JOIN secretaria s ON t.id_secretaria = s.id
-             ORDER BY t.data_tramitacao DESC`
-        );
+        const listaTramitacoes = await database.ExecutaComando(`
+           SELECT 
+    t.id, 
+    t.id_servico, 
+    t.id_secretaria, 
+    t.msg_motivo, 
+    t.data_tramitacao,
+    r.agserv_nomeSolicitante AS nomeSolicitante,
+    r.agserv_cpfSolicitante AS cpfSolicitante,
+    s.nome_servico AS tipo_servico, 
+    sec.nome_secretaria
+FROM 
+    tramitarserv t
+JOIN 
+    realizaragserv r ON t.id_servico = r.agserv_id
+JOIN 
+    servico s ON r.agserv_servico_id = s.id
+JOIN 
+    secretaria sec ON t.id_secretaria = sec.id
+ORDER BY 
+    t.data_tramitacao DESC;
+        `);
         return listaTramitacoes;
     }
+    
 
     async obterPorId(id) {
         const result = await database.ExecutaComando(
@@ -49,6 +68,7 @@ class TramitarServModel {
             [dadosTramitacao.id_servico, dadosTramitacao.id_secretaria, dadosTramitacao.msg_motivo]
         );
     }
+
 
     async atualizar(id, dadosTramitacao) {
         await database.ExecutaComandoNonQuery(
