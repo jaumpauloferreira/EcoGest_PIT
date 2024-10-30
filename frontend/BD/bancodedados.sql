@@ -194,7 +194,13 @@ INSERT INTO `user` (`email`, `nome`, `senha`) VALUES
 ('teste@gmail.com', 'teste', '$2a$10$OTfqlVuQr83.Zy24XFI7N.zUkdcORmfx8zD71XhKvowpYx/bbb8Dm'),
 ('thiago@gmail.com', 'Thiago', '$2a$10$kPHqGoJAkpJVfhQE.Hx/KuvWdIGkMpY5YUgJx7RWvV/I7xw.WDdne');
 
--- Tabela realizaragserv
+
+ALTER TABLE realizaragserv
+ADD COLUMN data_fim datetime DEFAULT NULL;
+
+
+
+-- Tabela realizaragserv (Agendamentos Cadastrados)
 DROP TABLE IF EXISTS `realizaragserv`;
 CREATE TABLE `realizaragserv` (
   `agserv_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -208,6 +214,7 @@ CREATE TABLE `realizaragserv` (
   `agserv_data` date DEFAULT NULL,
   `agserv_horario` time NOT NULL,
   `agserv_descricao` varchar(1000) NOT NULL,
+  `agserv_status` varchar(50) NOT NULL DEFAULT 'Pendente', -- campo de status adicionado
   PRIMARY KEY (`agserv_id`),
   KEY `fk_cadastrotiposdeservico_realizaragserv` (`agserv_tipoServico_id`),
   CONSTRAINT `fk_cadastrotiposdeservico_realizaragserv` FOREIGN KEY (`agserv_tipoServico_id`) REFERENCES `cadastrotiposdeservico` (`id`)
@@ -215,32 +222,9 @@ CREATE TABLE `realizaragserv` (
 
 -- Inserção de dados na tabela realizaragserv
 INSERT INTO `realizaragserv` VALUES 
-(1,'Carlos Eduardo','12345678901','(11) 91234-5678','Rua Exemplo, 123','Centro',45,1,'2024-10-20','09:00:00','Serviço de poda de árvores em área pública'),
-(2,'Ana Maria','98765432100','(22) 98765-4321','Av. Brasil, 321','Zona Sul',100,3,'2024-10-21','10:00:00','Liberação de mudas de árvores para comunidade'),
-(3,'Roberto Silva','11122233344','(33) 99999-8888','Rua das Flores, 789','Jardim Primavera',120,4,'2024-10-22','11:30:00','Medição e análise da qualidade do ar em área industrial');
-
--- Tabela servico (para Gerenciar Ciclo de Serviços)
-DROP TABLE IF EXISTS `servico`;
-CREATE TABLE `servico` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `status` VARCHAR(50) NOT NULL,
-  `data_inicio` DATE NOT NULL,
-  `data_fim` DATE,
-  `descricao` VARCHAR(1000),
-  `beneficiario_id` INT NOT NULL,
-  `colaborador_id` INT NOT NULL,
-  `tipo_servico_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`beneficiario_id`) REFERENCES `beneficiario`(`id`),
-  FOREIGN KEY (`colaborador_id`) REFERENCES `colaboradores`(`id`),
-  FOREIGN KEY (`tipo_servico_id`) REFERENCES `cadastrotiposdeservico`(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Inserção de dados na tabela servico
-INSERT INTO `servico` (`status`, `data_inicio`, `data_fim`, `descricao`, `beneficiario_id`, `colaborador_id`, `tipo_servico_id`) VALUES
-('Pendente', '2024-10-20', NULL, 'Descrição do serviço pendente', 1, 2, 1),
-('Em Andamento', '2024-10-21', NULL, 'Serviço de poda em andamento', 2, 3, 4),
-('Concluído', '2024-10-15', '2024-10-18', 'Serviço de coleta de lixo finalizado', 3, 1, 3);
+(1,'Carlos Eduardo','12345678901','(11) 91234-5678','Rua Exemplo, 123','Centro',45,1,'2024-10-20','09:00:00','Serviço de poda de árvores em área pública', 'Pendente'),
+(2,'Ana Maria','98765432100','(22) 98765-4321','Av. Brasil, 321','Zona Sul',100,3,'2024-10-21','10:00:00','Liberação de mudas de árvores para comunidade', 'Em Andamento'),
+(3,'Roberto Silva','11122233344','(33) 99999-8888','Rua das Flores, 789','Jardim Primavera',120,4,'2024-10-22','11:30:00','Medição e análise da qualidade do ar em área industrial', 'Concluído');
 
 -- Tabela historico_servico (para registrar histórico de alterações de status)
 DROP TABLE IF EXISTS `historico_servico`;
@@ -251,7 +235,7 @@ CREATE TABLE `historico_servico` (
   `alterado_por` VARCHAR(100),
   `data_alteracao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`servico_id`) REFERENCES `servico`(`id`)
+  FOREIGN KEY (`servico_id`) REFERENCES `realizaragserv`(`agserv_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Inserção de dados na tabela historico_servico
