@@ -1,63 +1,69 @@
 // Local: frontend/components/GerenciarCicloServicos.jsx
 
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Table, Container, Alert, Modal, Form } from 'react-bootstrap';
-import { FaInfoCircle, FaTrash, FaPlus, FaSave } from 'react-icons/fa';
+import { Button, Card, Table, Container, Alert, Modal, Form, InputGroup, Row, Col, Badge } from 'react-bootstrap';
+import { FaSearch, FaTrash, FaChartPie, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
 import { format, parseISO } from 'date-fns';
+import './GerenciarCicloServicos.css';
 
 const GerenciarCicloServicos = () => {
   const [servicos, setServicos] = useState([]);
-  const [servicoSelecionado, setServicoSelecionado] = useState(null);
-  const [historico, setHistorico] = useState([]);
-  const [erro, setErro] = useState('');
+  const [filteredServicos, setFilteredServicos] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+  const [tipoServicoFilter, setTipoServicoFilter] = useState('');
+  const [selectedServices, setSelectedServices] = useState([]);
   const [sucessoMensagem, setSucessoMensagem] = useState('');
+  const [erro, setErro] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [servicoParaExcluir, setServicoParaExcluir] = useState(null);
-  const [novoServicoModal, setNovoServicoModal] = useState(false);
-  const [novoServico, setNovoServico] = useState({ tipo_servico: '', solicitante: '', data_inicio: '' });
-  const [statusAtualizado, setStatusAtualizado] = useState('');
 
   useEffect(() => {
     carregarServicos();
   }, []);
 
-  const carregarServicos = () => {
-    GerenciarCicloServService.obterTodos()
-      .then(data => {
-        setServicos(data);
-        setErro('');
-      })
-      .catch(() => setErro('Erro ao carregar serviços'));
+  const carregarServicos = async () => {
+    try {
+      const data = await GerenciarCicloServService.obterTodos();
+      setServicos(data);
+      setFilteredServicos(data);
+    } catch (error) {
+      setErro('Erro ao carregar serviços');
+    }
   };
 
-  const mostrarDetalhes = (id) => {
-    GerenciarCicloServService.obterPorId(id)
-      .then(data => {
-        setServicoSelecionado(data);
-        setStatusAtualizado(data.status);
-      })
-      .catch(() => setErro('Erro ao carregar detalhes do serviço'));
-
-    GerenciarCicloServService.obterHistorico(id)
-      .then(data => setHistorico(data))
-      .catch(() => setErro('Erro ao carregar histórico'));
+  const handleFilterChange = () => {
+    let filtered = servicos;
+    if (statusFilter) filtered = filtered.filter(s => s.status === statusFilter);
+    if (dateFilter) filtered = filtered.filter(s => s.data_servico === dateFilter);
+    if (tipoServicoFilter) filtered = filtered.filter(s => s.tipo_servico.toLowerCase().includes(tipoServicoFilter.toLowerCase()));
+    setFilteredServicos(filtered);
   };
 
-  const atualizarStatus = () => {
-    if (servicoSelecionado) {
-      GerenciarCicloServService.atualizarStatus(servicoSelecionado.id, statusAtualizado)
-        .then(() => {
-          setSucessoMensagem('Status salvo com sucesso!');
-          carregarServicos();
-          setServicoSelecionado(null);
-
-          // Configura o tempo de exibição da mensagem de sucesso
-          setTimeout(() => {
-            setSucessoMensagem('');
-          }, 5000);
+  const handleMassUpdate = async (newStatus) => {
+    try {
+      await Promise.all(
+        selectedServices.map(async serviceId => {
+          await GerenciarCicloServService.atualizarStatus(serviceId, newStatus);
         })
-        .catch(() => setErro('Erro ao atualizar status do serviço'));
+      );
+      setServicos(prevServicos =>
+        prevServicos.map(servico =>
+          selectedServices.includes(servico.id) ? { ...servico, status: newStatus } : servico
+        )
+      );
+      setFilteredServicos(prevFiltered =>
+        prevFiltered.map(servico =>
+          selectedServices.includes(servico.id) ? { ...servico, status: newStatus } : servico
+        )
+      );
+      setSelectedServices([]);
+      setSucessoMensagem(`Status atualizado para ${newStatus}`);
+      setTimeout(() => setSucessoMensagem(''), 5000);
+    } catch {
+      setErro('Erro ao atualizar status dos serviços');
+      setTimeout(() => setErro(''), 5000);
     }
   };
 
@@ -66,210 +72,203 @@ const GerenciarCicloServicos = () => {
     setShowModal(true);
   };
 
-  const excluirServico = () => {
-    GerenciarCicloServService.excluirServico(servicoParaExcluir.id)
-      .then(() => {
-        setSucessoMensagem('Serviço excluído com sucesso!');
-        carregarServicos();
-        setShowModal(false);
-
-        setTimeout(() => {
-          setSucessoMensagem('');
-        }, 5000);
-      })
-      .catch(() => setErro('Erro ao excluir serviço'));
+  const excluirServico = async () => {
+    try {
+      await GerenciarCicloServService.excluirServico(servicoParaExcluir.id);
+      setServicos(prevServicos => prevServicos.filter(s => s.id !== servicoParaExcluir.id));
+      setFilteredServicos(prevFiltered => prevFiltered.filter(s => s.id !== servicoParaExcluir.id));
+      setSucessoMensagem('Serviço excluído com sucesso!');
+      setShowModal(false);
+      setTimeout(() => setSucessoMensagem(''), 5000);
+    } catch {
+      setErro('Erro ao excluir serviço');
+      setShowModal(false);
+      setTimeout(() => setErro(''), 5000);
+    }
   };
 
-  const abrirNovoServicoModal = () => {
-    setNovoServicoModal(true);
+  const toggleSelectAll = (e) => {
+    setSelectedServices(e.target.checked ? filteredServicos.map(s => s.id) : []);
   };
 
-  const fecharNovoServicoModal = () => {
-    setNovoServicoModal(false);
-    setNovoServico({ tipo_servico: '', solicitante: '', data_inicio: '' });
+  const toggleSelectService = (id) => {
+    setSelectedServices(prev =>
+      prev.includes(id) ? prev.filter(serviceId => serviceId !== id) : [...prev, id]
+    );
   };
 
-  const adicionarNovoServico = () => {
-    GerenciarCicloServService.adicionar(novoServico)
-      .then(() => {
-        setSucessoMensagem('Novo serviço adicionado com sucesso!');
-        carregarServicos();
-        fecharNovoServicoModal();
-
-        setTimeout(() => {
-          setSucessoMensagem('');
-        }, 5000);
-      })
-      .catch(() => setErro('Erro ao adicionar novo serviço'));
-  };
+  const pendentes = servicos.filter(s => s.status === 'Pendente').length;
+  const emAndamento = servicos.filter(s => s.status === 'Em Andamento').length;
+  const concluidos = servicos.filter(s => s.status === 'Concluído').length;
 
   return (
-    <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
+    <Container className="bg-white p-4 rounded shadow">
       <h2 className="text-center mb-4">
-        <FaInfoCircle /> GERENCIAR CICLO DE SERVIÇOS
+        <FaTasks /> Gerenciar Ciclo de Serviços
       </h2>
 
-      <Container className="mt-2">
-        {erro && <Alert variant="danger" className="mt-3">{erro}</Alert>}
-        {sucessoMensagem && <Alert variant="success" className="mt-3">{sucessoMensagem}</Alert>}
+      {erro && <Alert variant="danger">{erro}</Alert>}
+      {sucessoMensagem && <Alert variant="success">{sucessoMensagem}</Alert>}
 
-        <Button variant="success" className="mb-3" onClick={abrirNovoServicoModal}>
-          <FaPlus /> Cadastrar Novo Serviço
-        </Button>
+      {/* Painel de Resumo de Serviços */}
+      <h4 className="text-center my-4"><FaChartPie /> Resumo de Serviços</h4>
+      <Row className="mb-4">
+        <Col md={4}>
+          <Card className="text-center shadow-sm border-danger">
+            <Card.Body>
+              <h5><FaExclamationCircle className="text-danger" /> Pendentes</h5>
+              <h3 className="text-danger">{pendentes}</h3>
+              <p>Serviços aguardando início</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={4}>
+          <Card className="text-center shadow-sm border-warning">
+            <Card.Body>
+              <h5><FaClock className="text-warning" /> Em Andamento</h5>
+              <h3 className="text-warning">{emAndamento}</h3>
+              <p>Serviços em execução</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={4}>
+          <Card className="text-center shadow-sm border-success">
+            <Card.Body>
+              <h5><FaCheckCircle className="text-success" /> Concluídos</h5>
+              <h3 className="text-success">{concluidos}</h3>
+              <p>Serviços finalizados com sucesso</p>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <Card>
-          <Card.Header as="h4">Serviços Agendados</Card.Header>
-          <Card.Body>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nome do Solicitante</th>
-                  <th>Contato</th>
-                  <th>Data Serv.</th>
-                  <th>Horário</th>
-                  <th>Tipo do Serviço</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {servicos.map((servico) => (
-                  <tr key={servico.id}>
-                    <td>{servico.id}</td>
-                    <td>{servico.solicitante || 'Não disponível'}</td>
-                    <td>{servico.contato || 'Não disponível'}</td>
-                    <td>{servico.data_servico ? format(parseISO(servico.data_servico), 'dd/MM/yyyy') : 'Data não disponível'}</td>
-                    <td>{servico.horario || 'Não disponível'}</td>
-                    <td>{servico.tipo_servico || 'Não disponível'}</td>
-                    <td>
-                      <div className="d-flex">
-                        <Button
-                          variant="link"
-                          onClick={() => mostrarDetalhes(servico.id)}
-                          className="text-info fs-5"
-                        >
-                          <FaInfoCircle /> Detalhes
-                        </Button>
-                        <Button
-                          variant="link"
-                          onClick={() => confirmarExclusao(servico)}
-                          className="text-danger fs-5"
-                        >
-                          <FaTrash /> Excluir
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+      {/* Filtros de Pesquisa */}
+      <Row className="mb-3">
+        <Col md={4}>
+          <InputGroup>
+            <Form.Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="">Filtrar por Status</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Em Andamento">Em Andamento</option>
+              <option value="Concluído">Concluído</option>
+            </Form.Select>
+          </InputGroup>
+        </Col>
+        <Col md={4}>
+          <InputGroup>
+            <Form.Control
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              placeholder="Filtrar por Data"
+            />
+          </InputGroup>
+        </Col>
+        <Col md={4}>
+          <InputGroup>
+            <Form.Control
+              type="text"
+              placeholder="Filtrar por Tipo de Serviço"
+              value={tipoServicoFilter}
+              onChange={(e) => setTipoServicoFilter(e.target.value)}
+            />
+            <Button variant="secondary" onClick={handleFilterChange}>
+              <FaSearch />
+            </Button>
+          </InputGroup>
+        </Col>
+      </Row>
 
-            {servicoSelecionado && (
-              <div className="mt-4">
-                <Card>
-                  <Card.Header as="h4">Detalhes do Serviço: {servicoSelecionado.tipo_servico}</Card.Header>
-                  <Card.Body>
-                    <p><strong>Solicitante:</strong> {servicoSelecionado.solicitante || 'Não disponível'}</p>
-                    <p><strong>Status Atual:</strong> {servicoSelecionado.status || 'Não disponível'}</p>
-                    <p><strong>Data de Início:</strong> {servicoSelecionado.data_servico ? format(parseISO(servicoSelecionado.data_servico), 'dd/MM/yyyy') : 'Data não disponível'}</p>
-                    {servicoSelecionado.data_fim && (
-                      <p><strong>Data de Conclusão:</strong> {format(parseISO(servicoSelecionado.data_fim), 'dd/MM/yyyy')}</p>
-                    )}
-                    <h5>Atualizar Status</h5>
-                    <Form.Group controlId="statusAtualizado">
-                      <Form.Label>Novo Status</Form.Label>
-                      <Form.Control
-                        as="select"
-                        value={statusAtualizado}
-                        onChange={(e) => setStatusAtualizado(e.target.value)}
-                      >
-                        <option value="Pendente">Pendente</option>
-                        <option value="Em Andamento">Em Andamento</option>
-                        <option value="Concluído">Concluído</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <Button variant="primary" onClick={atualizarStatus} className="mt-3">
-                      <FaSave /> Salvar Status
+      {/* Tabela de Serviços */}
+      <Card>
+        <Card.Header>
+          <FaTasks /> Serviços Agendados
+        </Card.Header>
+        <Card.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>
+                  <Form.Check type="checkbox" onChange={toggleSelectAll} />
+                </th>
+                <th>ID</th>
+                <th>Nome do Solicitante</th>
+                <th>Contato</th>
+                <th>Data Serv.</th>
+                <th>Horário</th>
+                <th>Tipo do Serviço</th>
+                <th>Status / Excluir</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredServicos.map(servico => (
+                <tr key={servico.id}>
+                  <td>
+                    <Form.Check
+                      type="checkbox"
+                      checked={selectedServices.includes(servico.id)}
+                      onChange={() => toggleSelectService(servico.id)}
+                    />
+                  </td>
+                  <td>{servico.id}</td>
+                  <td>{servico.solicitante}</td>
+                  <td>{servico.contato}</td>
+                  <td>{format(parseISO(servico.data_servico), 'dd/MM/yyyy')}</td>
+                  <td>{servico.horario}</td>
+                  <td>{servico.tipo_servico}</td>
+                  <td>
+                    <Badge bg={
+                      servico.status === 'Concluído' ? 'success' :
+                      servico.status === 'Em Andamento' ? 'warning' : 'danger'
+                    }>
+                      {servico.status}
+                    </Badge>
+                    <Button
+                      variant="link"
+                      className="text-danger p-0 ms-2"
+                      onClick={() => confirmarExclusao(servico)}
+                    >
+                      <FaTrash />
                     </Button>
-                    <h5 className="mt-4">Histórico de Status</h5>
-                    <Table striped bordered>
-                      <thead>
-                        <tr>
-                          <th>Status</th>
-                          <th>Data da Alteração</th>
-                          <th>Alterado por</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {historico.map((registro, index) => (
-                          <tr key={index}>
-                            <td>{registro.status || 'Não disponível'}</td>
-                            <td>{registro.data_alteracao ? format(parseISO(registro.data_alteracao), 'dd/MM/yyyy') : 'Data não disponível'}</td>
-                            <td>{registro.alterado_por || 'Não disponível'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </Card.Body>
-                </Card>
-              </div>
-            )}
-          </Card.Body>
-        </Card>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
 
-        <Modal show={novoServicoModal} onHide={fecharNovoServicoModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Cadastrar Novo Serviço</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="tipo_servico">
-                <Form.Label>Tipo de Serviço</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Digite o tipo de serviço"
-                  value={novoServico.tipo_servico}
-                  onChange={(e) => setNovoServico({ ...novoServico, tipo_servico: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group controlId="solicitante">
-                <Form.Label>Solicitante</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Digite o nome do solicitante"
-                  value={novoServico.solicitante}
-                  onChange={(e) => setNovoServico({ ...novoServico, solicitante: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group controlId="data_inicio">
-                <Form.Label>Data de Início</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={novoServico.data_inicio}
-                  onChange={(e) => setNovoServico({ ...novoServico, data_inicio: e.target.value })}
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={fecharNovoServicoModal}>Cancelar</Button>
-            <Button variant="primary" onClick={adicionarNovoServico}>Cadastrar</Button>
-          </Modal.Footer>
-        </Modal>
+      {/* Atualização de Status em Massa */}
+      <Row className="mt-3">
+        <Col>
+        <Button variant="danger" onClick={() => handleMassUpdate('Pendente')}>Pendente</Button>{' '}
+        <Button variant="warning" className="btn-em-andamento" onClick={() => handleMassUpdate('Em Andamento')}>
+  Em Andamento
+</Button>{' '}
 
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirmação de Exclusão</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Tem certeza de que deseja excluir este serviço agendado?</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-            <Button variant="danger" onClick={excluirServico}>Excluir</Button>
-          </Modal.Footer>
-        </Modal>
-      </Container>
-    </div>
+          <Button variant="success" onClick={() => handleMassUpdate('Concluído')}>Concluído</Button>{' '}
+          
+        </Col>
+      </Row>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmação de Exclusão</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Tem certeza de que deseja excluir este serviço agendado?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+          <Button variant="danger" onClick={excluirServico}>Excluir</Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 };
 
 export default GerenciarCicloServicos;
+
+
+
+
+
