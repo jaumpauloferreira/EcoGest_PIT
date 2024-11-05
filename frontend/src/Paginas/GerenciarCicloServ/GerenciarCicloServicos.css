@@ -1,9 +1,12 @@
 .status-button {
-    width: 150px; /* Define a largura igual para os três botões */
-  }
+  width: 165px; /* Define a mesma largura para todos os botões */
+  color: #fff; /* Cor branca para o texto */
+}
+
   
 
   .btn-em-andamento {
     color: #fff; /* Define a cor do texto como branca */
   }
   
+

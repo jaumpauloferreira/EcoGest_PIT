@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Table, Container, Alert, Modal, Form, InputGroup, Row, Col, Badge } from 'react-bootstrap';
-import { FaSearch, FaTrash, FaChartPie, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa';
+import { FaSearch, FaTrash, FaChartPie, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock, FaExclamation, FaCheck } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
 import { format, parseISO } from 'date-fns';
 import './GerenciarCicloServicos.css';
@@ -10,8 +10,6 @@ import './GerenciarCicloServicos.css';
 const GerenciarCicloServicos = () => {
   const [servicos, setServicos] = useState([]);
   const [filteredServicos, setFilteredServicos] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
   const [tipoServicoFilter, setTipoServicoFilter] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
   const [sucessoMensagem, setSucessoMensagem] = useState('');
@@ -35,8 +33,6 @@ const GerenciarCicloServicos = () => {
 
   const handleFilterChange = () => {
     let filtered = servicos;
-    if (statusFilter) filtered = filtered.filter(s => s.status === statusFilter);
-    if (dateFilter) filtered = filtered.filter(s => s.data_servico === dateFilter);
     if (tipoServicoFilter) filtered = filtered.filter(s => s.tipo_servico.toLowerCase().includes(tipoServicoFilter.toLowerCase()));
     setFilteredServicos(filtered);
   };
@@ -144,27 +140,7 @@ const GerenciarCicloServicos = () => {
 
       {/* Filtros de Pesquisa */}
       <Row className="mb-3">
-        <Col md={4}>
-          <InputGroup>
-            <Form.Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="">Filtrar por Status</option>
-              <option value="Pendente">Pendente</option>
-              <option value="Em Andamento">Em Andamento</option>
-              <option value="Concluído">Concluído</option>
-            </Form.Select>
-          </InputGroup>
-        </Col>
-        <Col md={4}>
-          <InputGroup>
-            <Form.Control
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              placeholder="Filtrar por Data"
-            />
-          </InputGroup>
-        </Col>
-        <Col md={4}>
+        <Col md={12}>
           <InputGroup>
             <Form.Control
               type="text"
@@ -239,15 +215,17 @@ const GerenciarCicloServicos = () => {
       </Card>
 
       {/* Atualização de Status em Massa */}
-      <Row className="mt-3">
-        <Col>
-        <Button variant="danger" onClick={() => handleMassUpdate('Pendente')}>Pendente</Button>{' '}
-        <Button variant="warning" className="btn-em-andamento" onClick={() => handleMassUpdate('Em Andamento')}>
-  Em Andamento
-</Button>{' '}
-
-          <Button variant="success" onClick={() => handleMassUpdate('Concluído')}>Concluído</Button>{' '}
-          
+      <Row className="mt-3 button-row">
+        <Col className="text-center">
+          <Button variant="danger" className="status-button" onClick={() => handleMassUpdate('Pendente')}>
+            <FaExclamation className="me-2" /> Pendente
+          </Button>{' '}
+          <Button variant="warning" className="status-button" onClick={() => handleMassUpdate('Em Andamento')}>
+            <FaClock className="me-2" /> Em Andamento
+          </Button>{' '}
+          <Button variant="success" className="status-button" onClick={() => handleMassUpdate('Concluído')}>
+            <FaCheck className="me-2" /> Concluído
+          </Button>
         </Col>
       </Row>
 
@@ -267,8 +245,3 @@ const GerenciarCicloServicos = () => {
 };
 
 export default GerenciarCicloServicos;
-
-
-
-
-
