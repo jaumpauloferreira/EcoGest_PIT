@@ -2,10 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Table, Container, Alert, Modal, Form, InputGroup, Row, Col, Badge } from 'react-bootstrap';
-import { FaSearch, FaTrash, FaChartPie, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock, FaExclamation, FaCheck } from 'react-icons/fa';
+import { Bar } from 'react-chartjs-2';
+import { FaSearch, FaTrash, FaChartBar, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock, FaExclamation, FaCheck } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
 import { format, parseISO } from 'date-fns';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import './GerenciarCicloServicos.css';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const GerenciarCicloServicos = () => {
   const [servicos, setServicos] = useState([]);
@@ -33,7 +37,9 @@ const GerenciarCicloServicos = () => {
 
   const handleFilterChange = () => {
     let filtered = servicos;
-    if (tipoServicoFilter) filtered = filtered.filter(s => s.tipo_servico.toLowerCase().includes(tipoServicoFilter.toLowerCase()));
+    if (tipoServicoFilter) {
+      filtered = filtered.filter(s => s.tipo_servico.toLowerCase().includes(tipoServicoFilter.toLowerCase()));
+    }
     setFilteredServicos(filtered);
   };
 
@@ -97,6 +103,38 @@ const GerenciarCicloServicos = () => {
   const emAndamento = servicos.filter(s => s.status === 'Em Andamento').length;
   const concluidos = servicos.filter(s => s.status === 'Concluído').length;
 
+  const dataGrafico = {
+    labels: ['Pendentes', 'Em Andamento', 'Concluídos'],
+    datasets: [
+      {
+        label: 'Distribuição de Status',
+        data: [pendentes, emAndamento, concluidos],
+        backgroundColor: ['#dc3545', '#ffc107', '#28a745'],
+        borderColor: ['#b02a37', '#e0a800', '#218838'],
+        borderWidth: 1
+      }
+    ]
+  };
+
+  const optionsGrafico = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+      },
+      title: {
+        display: true,
+        text: 'Status dos Serviços'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: Math.max(pendentes, emAndamento, concluidos) + 2
+      }
+    }
+  };
+
   return (
     <Container className="bg-white p-4 rounded shadow">
       <h2 className="text-center mb-4">
@@ -104,13 +142,26 @@ const GerenciarCicloServicos = () => {
       </h2>
 
       {erro && <Alert variant="danger">{erro}</Alert>}
-      {sucessoMensagem && <Alert variant="success">{sucessoMensagem}</Alert>}
+
+      {/* Gráfico de Distribuição de Status em Colunas */}
+      <Row className="mb-4">
+        <Col>
+          <Card className="shadow-sm">
+            <Card.Body className="d-flex flex-column align-items-center">
+              <h5 className="text-center mb-3"><FaChartBar /> Distribuição de Status</h5>
+              <div style={{ width: '400px' }}>
+                <Bar data={dataGrafico} options={optionsGrafico} />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {/* Painel de Resumo de Serviços */}
-      <h4 className="text-center my-4"><FaChartPie /> Resumo de Serviços</h4>
-      <Row className="mb-4">
+      <h4 className="text-center my-4"><FaChartBar /> Resumo de Serviços</h4>
+      <Row className="mb-4 text-center">
         <Col md={4}>
-          <Card className="text-center shadow-sm border-danger">
+          <Card className="shadow-sm border-danger">
             <Card.Body>
               <h5><FaExclamationCircle className="text-danger" /> Pendentes</h5>
               <h3 className="text-danger">{pendentes}</h3>
@@ -119,7 +170,7 @@ const GerenciarCicloServicos = () => {
           </Card>
         </Col>
         <Col md={4}>
-          <Card className="text-center shadow-sm border-warning">
+          <Card className="shadow-sm border-warning">
             <Card.Body>
               <h5><FaClock className="text-warning" /> Em Andamento</h5>
               <h3 className="text-warning">{emAndamento}</h3>
@@ -128,11 +179,11 @@ const GerenciarCicloServicos = () => {
           </Card>
         </Col>
         <Col md={4}>
-          <Card className="text-center shadow-sm border-success">
+          <Card className="shadow-sm border-success">
             <Card.Body>
               <h5><FaCheckCircle className="text-success" /> Concluídos</h5>
               <h3 className="text-success">{concluidos}</h3>
-              <p>Serviços finalizados com sucesso</p>
+              <p>Serviços finalizados</p>
             </Card.Body>
           </Card>
         </Col>
@@ -155,18 +206,27 @@ const GerenciarCicloServicos = () => {
         </Col>
       </Row>
 
+      {/* Mensagem de Sucesso abaixo do Filtro */}
+      {sucessoMensagem && (
+        <Row className="my-3">
+          <Col>
+            <Alert variant="success" className="text-center">
+              {sucessoMensagem}
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
       {/* Tabela de Serviços */}
-      <Card>
-        <Card.Header>
+      <Card className="shadow-sm">
+        <Card.Header className="">
           <FaTasks /> Serviços Agendados
         </Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
-                <th>
-                  <Form.Check type="checkbox" onChange={toggleSelectAll} />
-                </th>
+                <th><Form.Check type="checkbox" onChange={toggleSelectAll} /></th>
                 <th>ID</th>
                 <th>Nome do Solicitante</th>
                 <th>Contato</th>
@@ -215,15 +275,15 @@ const GerenciarCicloServicos = () => {
       </Card>
 
       {/* Atualização de Status em Massa */}
-      <Row className="mt-3 button-row">
+      <Row className="mt-3">
         <Col className="text-center">
-          <Button variant="danger" className="status-button" onClick={() => handleMassUpdate('Pendente')}>
+          <Button variant="danger" className="me-2" onClick={() => handleMassUpdate('Pendente')}>
             <FaExclamation className="me-2" /> Pendente
-          </Button>{' '}
-          <Button variant="warning" className="status-button" onClick={() => handleMassUpdate('Em Andamento')}>
+          </Button>
+          <Button variant="warning" className="me-2" onClick={() => handleMassUpdate('Em Andamento')}>
             <FaClock className="me-2" /> Em Andamento
-          </Button>{' '}
-          <Button variant="success" className="status-button" onClick={() => handleMassUpdate('Concluído')}>
+          </Button>
+          <Button variant="success" onClick={() => handleMassUpdate('Concluído')}>
             <FaCheck className="me-2" /> Concluído
           </Button>
         </Col>

@@ -151,7 +151,7 @@ function NavBar() {
                                 <li className="nav-link px-2 py-2">
                                     <Link to="/GerenciarCicloServicos">
                                         <FaTasks />
-                                        <span className="mx-2">Gerenciar Ciclo de Serviços</span>
+                                        <span className="mx-2">Gerenciar Ciclo de Serv.</span>
                                     </Link>
                                 </li>
                             )}
