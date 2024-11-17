@@ -19,7 +19,6 @@ CREATE TABLE `beneficiario` (
   UNIQUE KEY `cpf_UNIQUE` (`cpf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela beneficiario
 INSERT INTO `beneficiario` (`id`, `nome`, `cpf`, `contato`, `email`, `endereco`, `bairro`, `numero`, `datanascimento`) VALUES
 (1, 'João Paulo Ferreira', '336.360.788-73', '(14) 99878-4400', 'joaopaulo@hotmail.com', 'Rua Eleazar', 'Eldorado', 61, '1985-10-08'),
 (2, 'Ana Clara Ferreira', '080.370.774-18', '(44) 99541-2542', 'anaclara@hotmail.com', 'Rua das pedras verdes', 'Centro', 188, '1991-03-16'),
@@ -34,7 +33,6 @@ CREATE TABLE `cadastrotiposdemaquinario` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela cadastrotiposdemaquinario
 INSERT INTO `cadastrotiposdemaquinario` (`id`, `nome`) VALUES
 (1, 'Utilitários'),
 (2, 'Maquinários Pesados'),
@@ -49,7 +47,6 @@ CREATE TABLE `cadastrotiposdeservico` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela cadastrotiposdeservico
 INSERT INTO `cadastrotiposdeservico` (`id`, `nome`) VALUES
 (1, 'Realizar Poda e Remoção de plantas'),
 (3, 'Liberação de mudas de árvores para beneficiários'),
@@ -66,7 +63,6 @@ CREATE TABLE `cadtipoativsust` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela cadtipoativsust
 INSERT INTO `cadtipoativsust` (`id`, `nome`) VALUES
 (1, 'Evento cultural para levantamento de recursos'),
 (2, 'Programa de medição para preservação de mata ciliar'),
@@ -99,7 +95,6 @@ CREATE TABLE `colaboradores` (
   UNIQUE KEY `cpf_UNIQUE` (`cpf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela colaboradores
 INSERT INTO `colaboradores` (`id`, `nome`, `cpf`, `contato`, `endereco`, `bairro`, `numero`, `dataNascimento`, `cargo`, `nivelEscolaridade`, `email`) VALUES
 (1, 'Vitória Caldeira dos Santos', '518.508.748-08', '(18) 99626-4023', 'Rua Valter da Silva', 'Asa Branca', 260, '2002-10-26', 'Fiscal', 'Doutorado', 'vitoria@gmail.com'),
 (2, 'Maria Cleusa', '232.434.324-32', '(18) 99548-3029', 'Rua Valter da Silva', 'Jardim Por do Sol', 1211, '2001-12-11', 'Secretário', 'Ensino Técnico', 'test@gmail.com.br'),
@@ -126,7 +121,6 @@ CREATE TABLE `criarativsust` (
   CONSTRAINT `fk_cadtipoativsust_criarativsust` FOREIGN KEY (`id`) REFERENCES `cadtipoativsust` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela criarativsust
 INSERT INTO `criarativsust` (`criar_id`, `criar_nome`, `criar_cpf`, `criar_contato`, `criar_endereco`, `criar_bairro`, `criar_numero`, `id`, `criar_data`, `criar_horarioInicial`, `criar_horarioFinal`, `criar_descricao`) VALUES
 (1, 'João da Silva', '12345678901', '(11) 91234-5678', 'Rua Exemplo, 123', 'Centro', 45, 1, '2024-09-20', '08:00:00', '12:00:00', 'Atividade de coleta seletiva no bairro Centro.'),
 (2, 'Ana Clara', '98765432100', '(21) 92345-6789', 'Av. Principal, 456', 'Jardim Paulista', 22, 2, '2024-10-01', '09:00:00', '13:00:00', 'Atividade de educação ambiental para crianças.'),
@@ -142,7 +136,6 @@ CREATE TABLE `maquinario` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela maquinario
 INSERT INTO `maquinario` (`id`, `modelo`, `placa`, `ano`) VALUES
 (1, 'Pá Carregadeira Caterpillar', 'AAA-0A00', 2024),
 (2, 'Motoniveladora Caterpillar', 'BBB-0B00', 2024),
@@ -155,7 +148,6 @@ CREATE TABLE `roles` (
   `name` VARCHAR(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela roles
 INSERT INTO `roles` (`name`) VALUES
 ('admin'),
 ('diretor'),
@@ -171,34 +163,11 @@ CREATE TABLE `users` (
   FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Inserção de dados na tabela users
 INSERT INTO `users` (`email`, `password`, `role_id`) VALUES
 ('willian@gmail.com', 'willian123', 1),
 ('joao@gmail.com', 'joao123', 2),
 ('vitor@gmail.com', 'vitor123', 3),
 ('thiago@gmail.com', 'thiago123', 3);
-
--- Tabela user (adicional para autenticação)
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `email` VARCHAR(25) NOT NULL,
-  `nome` VARCHAR(35) NOT NULL,
-  `senha` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Inserção de dados na tabela user (adicional para autenticação)
-INSERT INTO `user` (`email`, `nome`, `senha`) VALUES
-('ecogest@gmail.com', 'ecogest', '$2a$10$FQcfJ6XZuWiUuLoIZ2F9aO9PjmXkDTON3HIIi/alYetP/6xERoXbu'),
-('t1@gmail.com', 't1', '$2a$10$bmoonC20reMbMOc/eRJyGOB28EHx1icSZN.P8B1HCTaUWfdnljRri'),
-('teste@gmail.com', 'teste', '$2a$10$OTfqlVuQr83.Zy24XFI7N.zUkdcORmfx8zD71XhKvowpYx/bbb8Dm'),
-('thiago@gmail.com', 'Thiago', '$2a$10$kPHqGoJAkpJVfhQE.Hx/KuvWdIGkMpY5YUgJx7RWvV/I7xw.WDdne');
-
-
-ALTER TABLE realizaragserv
-ADD COLUMN data_fim datetime DEFAULT NULL;
-
-
 
 -- Tabela realizaragserv (Agendamentos Cadastrados)
 DROP TABLE IF EXISTS `realizaragserv`;
@@ -214,7 +183,8 @@ CREATE TABLE `realizaragserv` (
   `agserv_data` date DEFAULT NULL,
   `agserv_horario` time NOT NULL,
   `agserv_descricao` varchar(1000) NOT NULL,
-  `agserv_status` varchar(50) NOT NULL DEFAULT 'Pendente', -- campo de status adicionado
+  `agserv_status` varchar(50) NOT NULL DEFAULT 'Pendente',
+  `data_fim` datetime DEFAULT NULL,
   PRIMARY KEY (`agserv_id`),
   KEY `fk_cadastrotiposdeservico_realizaragserv` (`agserv_tipoServico_id`),
   CONSTRAINT `fk_cadastrotiposdeservico_realizaragserv` FOREIGN KEY (`agserv_tipoServico_id`) REFERENCES `cadastrotiposdeservico` (`id`)
@@ -222,26 +192,9 @@ CREATE TABLE `realizaragserv` (
 
 -- Inserção de dados na tabela realizaragserv
 INSERT INTO `realizaragserv` VALUES 
-(1,'Carlos Eduardo','12345678901','(11) 91234-5678','Rua Exemplo, 123','Centro',45,1,'2024-10-20','09:00:00','Serviço de poda de árvores em área pública', 'Pendente'),
-(2,'Ana Maria','98765432100','(22) 98765-4321','Av. Brasil, 321','Zona Sul',100,3,'2024-10-21','10:00:00','Liberação de mudas de árvores para comunidade', 'Em Andamento'),
-(3,'Roberto Silva','11122233344','(33) 99999-8888','Rua das Flores, 789','Jardim Primavera',120,4,'2024-10-22','11:30:00','Medição e análise da qualidade do ar em área industrial', 'Concluído');
+(1, 'João Paulo Ferreira', '12345678901', '(11) 91234-5678', 'Rua Exemplo, 123', 'Centro', 45, 1, '2024-10-20', '09:00:00', 'Serviço de poda de árvores em área pública', 'Pendente', NULL),
+(2, 'Ana Clara Ferreira', '98765432100', '(22) 98765-4321', 'Av. Brasil, 321', 'Zona Sul', 100, 3, '2024-10-21', '10:00:00', 'Liberação de mudas de árvores para comunidade', 'Pendente', NULL),
+(3, 'Taisa Marina', '11122233344', '(33) 99999-8888', 'Rua das Flores, 789', 'Jardim Primavera', 120, 4, '2024-10-22', '11:30:00', 'Medição e análise da qualidade do ar em área industrial', 'Pendente', NULL);
 
--- Tabela historico_servico (para registrar histórico de alterações de status)
-DROP TABLE IF EXISTS `historico_servico`;
-CREATE TABLE `historico_servico` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `servico_id` INT NOT NULL,
-  `status` VARCHAR(50) NOT NULL,
-  `alterado_por` VARCHAR(100),
-  `data_alteracao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`servico_id`) REFERENCES `realizaragserv`(`agserv_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Inserção de dados na tabela historico_servico
-INSERT INTO `historico_servico` (`servico_id`, `status`, `alterado_por`) VALUES
-(1, 'Pendente', 'João Paulo'),
-(1, 'Em Andamento', 'Maria Cleusa'),
-(2, 'Pendente', 'Carlos Eduardo');
 
 
