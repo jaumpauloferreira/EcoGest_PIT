@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Container, Table, Alert } from 'react-bootstrap';
+import { Button, Col, Form, Row, Container, Table, Alert, Card } from 'react-bootstrap';
 import { FaCheckCircle, FaTrash, FaListAlt, FaEdit, FaSearch } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -146,12 +146,14 @@ function Secretaria() {
     }
 
     return (
-        <>
+        <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
+            <h2 className="text-center mb-4 fs-3">
+                <FaListAlt /> CADASTRO DE SECRETARIA
+            </h2>
             <Container className='form-colab'>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE SECRETARIA</h2>
-                <Col className="card borda">
-                    <hr />
-                    <Col className="card-body">
+                <Card>
+                    <Card.Header as="h5">Informações da Secretaria</Card.Header>
+                    <Card.Body>
                         <Form noValidate validated={validated} onSubmit={handleSalvar}>
                             <Row>
                                 <Form.Group as={Col} xs={1} controlId='id' className="mt-3">
@@ -188,7 +190,7 @@ function Secretaria() {
                                 </Alert>
                             </Row>
                             <Row>
-                                <Col className='row justify-content-center'>
+                                <Col className='row justify-content-center mt-4'>
                                     <Col className='col-auto'>
                                         <Button 
                                             type="submit" 
@@ -210,10 +212,10 @@ function Secretaria() {
                                 </Col>
                             </Row>
                         </Form>
-                    </Col>
-                </Col>
+                    </Card.Body>
+                </Card>
 
-                <h2 className="text-center mb-4 mt-4"><FaListAlt /> LISTA DE SECRETARIAS</h2>
+                <h2 className="text-center mb-4 mt-4 fs-3"><FaListAlt /> LISTA DE SECRETARIAS</h2>
                 <Form className="d-flex">
                     <Form.Control
                         type="search"
@@ -230,7 +232,7 @@ function Secretaria() {
                 {isLoading ? (
                     <p>Carregando...</p>
                 ) : (
-                    <Table striped bordered hover className="table mt-5 custom-table">
+                    <Table striped bordered hover className='mt-4'>
                         <thead className='bg-green text-white'>
                             <tr>
                                 <th scope="col">ID</th>
@@ -272,7 +274,7 @@ function Secretaria() {
                     </Table>
                 )}
             </Container>
-        </>
+        </div>
     );
 }
 

@@ -91,7 +91,7 @@
 import './Login.css'; // Reaproveitando o CSS de Login para manter a consistência
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEnvelope, FaBriefcase } from 'react-icons/fa';
+import { FaLock, FaEnvelope, FaBriefcase } from 'react-icons/fa';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -165,7 +165,7 @@ function Register() {
               Já tem uma conta? <a href="/">Faça login</a>
             </p>
             <p>
-              <a href="/Componentes">Voltar para a página inicial</a>
+              <a href="/">Voltar para a página inicial</a>
             </p>
           </div>
         </form>

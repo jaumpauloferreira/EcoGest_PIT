@@ -142,10 +142,10 @@ function CadTipoMaq() {
     return (
         <>
             <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE TIPOS DE MAQUINÁRIO</h2>
+                <h2 className="text-center mb-4 fs-3"><FaListAlt /> CADASTRO DE TIPOS DE MAQUINÁRIO</h2>
                 <Container className='mt-2'>
                     <Card>
-                        <Card.Header as="h4">
+                        <Card.Header as="h5">
                             <Row className="align-items-center">
                                 <Col lg={2}>Tipos de Maquinário:</Col>
                                 <Col lg={6}>
@@ -220,7 +220,7 @@ function CadTipoMaq() {
                         <Card.Header as="h5">Tipos de Maquinários Cadastrados</Card.Header>
                         <Card.Body>
                             {listaTipoMaq !== null && (
-                                <Table className='border-success mt-2'>
+                                <Table striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>ID</th>

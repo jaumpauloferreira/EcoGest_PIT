@@ -374,7 +374,7 @@ function FormColab() {
 
         <>
             <Container className='form-colab bg-white p-0 rounded shadow w-100' style={{ minHeight: '90vh' }}>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE COLABORADORES</h2>
+                <h2 className="text-center mb-4 fs-3"><FaListAlt /> CADASTRO DE COLABORADORES</h2>
                 <Col class="card borda">
                     <h5 class="card-header">Informações Pessoais</h5>
                     <hr /> { }
@@ -631,7 +631,7 @@ function FormColab() {
                         </div>
                     </Col>
                     <div className="custom-table-container">
-                        <Table striped bordered hover className="table mt-5 custom-table">
+                        <Table striped bordered hover className=" mt-5">
                             <thead>
                                 <tr>
                                     <th scope="col" className="w-5">ID</th>

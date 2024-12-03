@@ -142,7 +142,8 @@ async adicionar() {
                 realizarAgServ.agserv_data,
                 realizarAgServ.agserv_horario,
                 realizarAgServ.agserv_descricao,
-                cadastrotiposdeservico.nome AS tipo_servico
+                cadastrotiposdeservico.nome AS tipo_servico,
+                realizarAgServ.agserv_status
             FROM 
                 realizarAgServ
             JOIN 

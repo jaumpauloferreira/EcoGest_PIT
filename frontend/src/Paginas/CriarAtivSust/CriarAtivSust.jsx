@@ -245,13 +245,13 @@ function CriarAtivSust() {
 
   return (
     <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
-      <h2 className="text-center mb-4">
+      <h2 className="text-center mb-4 fs-3">
         <FaListAlt /> CRIAR ATIVIDADE SUSTENTÁVEL
       </h2>
 
       <Container className="mt-2">
         <Card>
-          <Card.Header as="h4">Informações do Solicitante</Card.Header>
+          <Card.Header as="h5">Informações do Solicitante</Card.Header>
           <Card.Body>
             <Form noValidate validated={validated} onSubmit={handleSalvar}>
               <Row className="align-items-center mb-3">
@@ -322,7 +322,7 @@ function CriarAtivSust() {
               </Row>
 
               <Card>
-                <Card.Header as="h4">Local onde será realizado</Card.Header>
+                <Card.Header as="h5">Local onde será realizado</Card.Header>
                 <Card.Body>
                   <Row className="align-items-center mb-3">
                     <Col lg={7}>
@@ -377,7 +377,7 @@ function CriarAtivSust() {
               </Card>
 
               <Card>
-                <Card.Header as="h4">Detalhes da Atividade Sustentável</Card.Header>
+                <Card.Header as="h5">Detalhes da Atividade Sustentável</Card.Header>
                 <Card.Body>
                   <Row className="align-items-center mb-3">
                     <Col lg={6}>
@@ -517,7 +517,7 @@ function CriarAtivSust() {
             </Form>
 
             {mostrarTabela && listaAtividades && listaAtividades.length > 0 ? (
-              <Table className="striped bordered hover">
+              <Table striped bordered hover>
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -526,7 +526,7 @@ function CriarAtivSust() {
                     <th colSpan={2}>Contato</th>
                     <th colSpan={2}>Data</th>
                     <th colSpan={2}>Atividade</th>
-                    <th colSpan={2}>Ações</th>
+                    <th colSpan={2} className="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -543,15 +543,13 @@ function CriarAtivSust() {
                           <Button
                             variant="link"
                             onClick={() => handleEditar(atividade.criar_id)}
-                            className="text-primary fs-5"
-                          >
+                            className="text-primary fs-5">
                             <FaEdit />
                           </Button>
                           <Button
                             variant="link"
                             onClick={() => handleExcluir(atividade.criar_id)}
-                            className="text-danger fs-5"
-                          >
+                            className="text-danger fs-5">
                             <FaTrash />
                           </Button>
                         </div>

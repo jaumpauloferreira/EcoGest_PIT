@@ -132,11 +132,11 @@ function CadAtivSust() {
     return (
         <>
             <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE TIPO DE ATIVIDADE SUSTENTÁVEL</h2>
+                <h2 className="text-center fs-3 mb-4"><FaListAlt /> CADASTRO DE TIPO DE ATIVIDADE SUSTENTÁVEL</h2>
                 <Container className='mt-2'>
                     <Card>
-                        <Card.Header as="h4">
-                            <Row className="align-items-center">
+                        <Card.Header>
+                            <Row className="align-items-center fs-5">
                                 <Col lg={2}>Atividades:</Col>
                                 <Col lg={6}>
                                     <Form.Group className='mb-0'>
@@ -210,7 +210,7 @@ function CadAtivSust() {
                         <Card.Header as="h5">Atividades Cadastradas</Card.Header>
                         <Card.Body>
                             {listaAtividades !== null && (
-                                <Table className='border-success mt-2'>
+                                <Table striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>ID</th>

@@ -102,7 +102,7 @@ const UpdateUserRole = () => {
         <button onClick={handleUpdateRole} className="btn">Atualizar Permissão</button>
         <div className="register-link">
         <p>
-              <a href="/Componentes">Voltar para a página inicial</a>
+              <a href="/">Voltar para a página inicial</a>
             </p>
         </div>
       </div>

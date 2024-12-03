@@ -80,12 +80,12 @@ function Beneficiarios() {
 
   return (
     <>
-      <h2 className="text-center">
+      <h2 className="text-center fs-3">
         <FaListAlt /> CADASTRO DE BENEFICIÁRIOS
       </h2>
       <Container>
         <Card>
-          <Card.Header as="h4">Informações Pessoais:</Card.Header>
+          <Card.Header as="h5">Informações Pessoais:</Card.Header>
           <Card.Body>
             <Row>
               <Col>
@@ -125,12 +125,7 @@ function Beneficiarios() {
           </InputGroup>
         </Form>
         {mostrarTabela && (
-          <Table
-            striped
-            bordered
-            hover
-            className="mt-3 dark-gray-bordered-table small-font-table"
-          >
+          <Table striped bordered hover>
             <thead>
               <tr>
                 <th className="text-center">ID</th>

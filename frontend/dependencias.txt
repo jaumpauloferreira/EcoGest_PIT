@@ -1,5 +1,8 @@
 -- FrontEndGrupo
 npm i react-router-dom
+npm i react-select
+npm i jspdf
+npm i xlsx
 
 -- BackEndGrupo
 npm i express --save

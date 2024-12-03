@@ -256,13 +256,13 @@ function RealizarAgServ() {
 
   return (
     <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
-      <h2 className="text-center mb-4">
+      <h2 className="text-center mb-4 fs-3">
         <FaListAlt /> REALIZAR AGENDAMENTO DE SERVIÇO
       </h2>
 
       <Container className="mt-2">
         <Card>
-          <Card.Header as="h4">Informações do Solicitante</Card.Header>
+          <Card.Header as="h5">Informações do Solicitante</Card.Header>
           <Card.Body>
             <Form noValidate validated={validated} onSubmit={handleSalvar}>
               <Row className="align-items-center mb-3">
@@ -332,7 +332,7 @@ function RealizarAgServ() {
               </Row>
 
               <Card>
-                <Card.Header as="h4">Detalhes do Serviço</Card.Header>
+                <Card.Header as="h5">Detalhes do Serviço</Card.Header>
                 <Card.Body>
                   <Row className="align-items-center mb-3">
                     <Col lg={7}>
@@ -488,7 +488,7 @@ function RealizarAgServ() {
                               <th>Data Serv.</th>
                               <th>Horário</th>
                               <th>Tipo do Serviço</th>
-                              <th>Ações</th>
+                              <th className="text-center">Ações</th>
                             </tr>
                           </thead>
                           <tbody>

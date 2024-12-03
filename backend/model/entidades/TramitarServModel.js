@@ -2,83 +2,106 @@ const Database = require("../database");
 const database = new Database();
 
 class TramitarServModel {
-    constructor(id, id_servico, id_secretaria, msg_motivo) {
+    constructor(id, id_tiposervico, id_secretaria, msg_motivo) {
         this.id = id;
-        this.id_servico = id_servico;
+        this.id_tiposervico = id_tiposervico; // Alterado de id_servico
         this.id_secretaria = id_secretaria;
         this.msg_motivo = msg_motivo;
     }
 
-    // obterTodos precisa mesclar os dados das tabelas para funcinar
-    // corrigido: dados de id_servico estavam sendo puxados do endpoint /servico
-    // agora estão sendo puxados de agserv_servico_id
     async obterTodos() {
         const listaTramitacoes = await database.ExecutaComando(`
-           SELECT 
-    t.id, 
-    t.id_servico, 
-    t.id_secretaria, 
-    t.msg_motivo, 
-    t.data_tramitacao,
-    r.agserv_nomeSolicitante AS nomeSolicitante,
-    r.agserv_cpfSolicitante AS cpfSolicitante,
-    s.nome_servico AS tipo_servico, 
-    sec.nome_secretaria
-FROM 
-    tramitarserv t
-JOIN 
-    realizaragserv r ON t.id_servico = r.agserv_id
-JOIN 
-    servico s ON r.agserv_servico_id = s.id
-JOIN 
-    secretaria sec ON t.id_secretaria = sec.id
-ORDER BY 
-    t.data_tramitacao DESC;
+            SELECT 
+                t.id, 
+                t.id_tiposervico,
+                t.id_secretaria, 
+                t.msg_motivo, 
+                t.data_tramitacao,
+                t.status,
+                r.agserv_nomeSolicitante AS nomeSolicitante,
+                r.agserv_cpfSolicitante AS cpfSolicitante,
+                cts.nome AS tipo_servico,
+                sec.nome_secretaria
+            FROM 
+                tramitarserv t
+            JOIN 
+                realizaragserv r ON t.id_tiposervico = r.agserv_id
+            JOIN 
+                cadastrotiposdeservico cts ON t.id_tiposervico = cts.id
+            JOIN 
+                secretaria sec ON t.id_secretaria = sec.id
+            ORDER BY 
+                t.data_tramitacao DESC;
         `);
         return listaTramitacoes;
     }
-    
-
     async obterPorId(id) {
         const result = await database.ExecutaComando(
-            `SELECT t.*, s.nome_secretaria 
+            `SELECT t.*, s.nome_secretaria, cts.nome AS tipo_servico
              FROM tramitarserv t
              INNER JOIN secretaria s ON t.id_secretaria = s.id
+             INNER JOIN cadastrotiposdeservico cts ON t.id_tiposervico = cts.id
              WHERE t.id = ?`, 
             [id]
         );
         return result[0];
     }
 
-    async obterPorServico(id_servico) {
+    async obterPorTipoServico(id_tiposervico) {
         const result = await database.ExecutaComando(
-            `SELECT t.*, s.nome_secretaria 
+            `SELECT t.*, s.nome_secretaria, cts.nome AS tipo_servico
              FROM tramitarserv t
              INNER JOIN secretaria s ON t.id_secretaria = s.id
-             WHERE t.id_servico = ?
+             INNER JOIN cadastrotiposdeservico cts ON t.id_tiposervico = cts.id
+             WHERE t.id_tiposervico = ?
              ORDER BY t.data_tramitacao DESC`, 
-            [id_servico]
+            [id_tiposervico]
         );
         return result;
     }
 
     async adicionar(dadosTramitacao) {
         await database.ExecutaComandoNonQuery(
-            'INSERT INTO tramitarserv (id_servico, id_secretaria, msg_motivo) VALUES (?, ?, ?)',
-            [dadosTramitacao.id_servico, dadosTramitacao.id_secretaria, dadosTramitacao.msg_motivo]
+            'INSERT INTO tramitarserv (id_tiposervico, id_secretaria, msg_motivo, status) VALUES (?, ?, ?, ?)',
+            [
+                dadosTramitacao.id_tiposervico, 
+                dadosTramitacao.id_secretaria, 
+                dadosTramitacao.msg_motivo,
+                dadosTramitacao.status || 'Em Análise' // Valor padrão caso não seja fornecido
+            ]
         );
     }
 
 
     async atualizar(id, dadosTramitacao) {
         await database.ExecutaComandoNonQuery(
-            'UPDATE tramitarserv SET id_servico = ?, id_secretaria = ?, msg_motivo = ? WHERE id = ?',
-            [dadosTramitacao.id_servico, dadosTramitacao.id_secretaria, dadosTramitacao.msg_motivo, id]
+            'UPDATE tramitarserv SET id_tiposervico = ?, id_secretaria = ?, msg_motivo = ?, status = ? WHERE id = ?',
+            [
+                dadosTramitacao.id_tiposervico, 
+                dadosTramitacao.id_secretaria, 
+                dadosTramitacao.msg_motivo,
+                dadosTramitacao.status || 'Em Análise', // Valor padrão caso não seja fornecido
+                id
+            ]
         );
     }
 
     async excluir(id) {
         await database.ExecutaComandoNonQuery('DELETE FROM tramitarserv WHERE id = ?', [id]);
+    }
+
+    async obterTiposServico() {
+        const result = await database.ExecutaComando(
+            'SELECT id, nome FROM cadastrotiposdeservico ORDER BY nome'
+        );
+        return result;
+    }
+
+    async obterSecretarias() {
+        const result = await database.ExecutaComando(
+            'SELECT id, nome_secretaria FROM secretaria ORDER BY nome_secretaria'
+        );
+        return result;
     }
 }
 

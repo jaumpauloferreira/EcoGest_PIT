@@ -136,10 +136,10 @@ function CadTiposServ() {
     return (
         <>
             <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE TIPOS DE SERVIÇO</h2>
+                <h2 className="text-center mb-4 fs-3"><FaListAlt /> CADASTRO DE TIPOS DE SERVIÇO</h2>
                 <Container className='mt-2'>
                     <Card>
-                        <Card.Header as="h4">
+                        <Card.Header as="h5">
                             <Row className="align-items-center">
                                 <Col lg={2}>Serviços:</Col>
                                 <Col lg={6}>
@@ -214,7 +214,7 @@ function CadTiposServ() {
                         <Card.Header as="h5">Serviços Cadastrados</Card.Header>
                         <Card.Body>
                             {listaServicos !== null && (
-                                <Table className='border-success mt-2'>
+                                <Table striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>ID</th>

@@ -12,16 +12,17 @@ function NavBar() {
     const [isHome, setIsHome] = useState(false);
     const [showCadastros, setShowCadastros] = useState(false);
     const [showAgendamentos, setShowAgendamentos] = useState(false);
+    const [showRelatorios, setShowRelatorios] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
-    
+
     const handleShow = () => {
         setShow(!show);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('authToken'); 
+        localStorage.removeItem('authToken');
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userRole');
         navigate('/');
@@ -38,11 +39,11 @@ function NavBar() {
         <>
             <div className={`side-navbar ${show ? 'active-nav' : ''}`} id="sidebar">
                 <ul className="nav flex-column text-white w-100 p-8">
-                    <span className="nav-link h3 text-black mt-4 mb-0 fw-bold fs-1 pb-0 text-center italic-text text-shadow ecogest">ECOGEST</span>
+                    <span className="nav-link h3 text-black mt-4 mb-0 fw-bold fs-1 pb-0 text-center italic-text text-shadow ecogest px-0">ECOGEST</span>
                     <span className="nav-link h1 text-black mb-4 pt-0 fs-6 text-center">Inovando o Presente, Preservando o Futuro</span>
 
                     {/* Link Home */}
-                    <li className="nav-link px-2 py-3">
+                    <li className="nav-link px-2 py-3 fs-6">
                         <Link to="/Componentes">
                             <FaHome />
                             <span className="mx-2">Home</span>
@@ -50,9 +51,15 @@ function NavBar() {
                     </li>
 
                     {/* Menu Cadastros */}
-                    <li className="nav-link px-2 py-3" onClick={() => setShowCadastros(!showCadastros)} style={{ cursor: 'pointer' }}>
-                        <FaClipboardList />
-                        <span className="mx-2">Menu de Cadastros</span>
+                    <li
+                        className={`d-flex align-items-center pointer nav-link px-2 py-3 ${showCadastros ? 'active-border' : ''}`}
+                        onClick={() => setShowCadastros(!showCadastros)}
+                    >
+                        <span className="d-flex align-items-center gap-2 fs-6">
+                            <FaClipboardList />
+                            <span>Menu de Cadastros</span>
+                        </span>
+                        <span className={`arrow ${showCadastros ? 'rotate' : ''}`}>▶</span>
                     </li>
                     {showCadastros && (
                         <ul className="nav flex-column ms-4">
@@ -104,7 +111,6 @@ function NavBar() {
                                     </Link>
                                 </li>
                             )}
-
                             {(isAdmin() || isDirector() || isColab()) && (
                                 <li className="nav-link px-2 py-2">
                                     <Link to="/secretaria">
@@ -112,14 +118,20 @@ function NavBar() {
                                         <span className="mx-2">Cadastro de Secretaria</span>
                                     </Link>
                                 </li>
-                            )}
+                            )}
                         </ul>
                     )}
 
                     {/* Menu Agendamentos */}
-                    <li className="nav-link px-2 py-3" onClick={() => setShowAgendamentos(!showAgendamentos)} style={{ cursor: 'pointer' }}>
-                        <FaRegClone />
-                        <span className="mx-2">Menu de Agendamentos</span>
+                    <li
+                        className={`d-flex align-items-center pointer nav-link px-2 py-3 ${showAgendamentos ? 'active-border' : ''}`}
+                        onClick={() => setShowAgendamentos(!showAgendamentos)}
+                    >
+                        <span className="d-flex align-items-center gap-2 fs-6">
+                            <FaClipboardList />
+                            <span>Menu de Agendamentos</span>
+                        </span>
+                        <span className={`arrow ${showAgendamentos ? 'rotate' : ''}`}>▶</span>
                     </li>
                     {showAgendamentos && (
                         <ul className="nav flex-column ms-4">
@@ -151,35 +163,62 @@ function NavBar() {
                                 <li className="nav-link px-2 py-2">
                                     <Link to="/GerenciarCicloServicos">
                                         <FaTasks />
-                                        <span className="mx-2">Gerenciar Ciclo de Serv.</span>
+                                        <span className="mx-2">Gerenciar Ciclo de Serviços</span>
                                     </Link>
                                 </li>
                             )}
                         </ul>
                     )}
-                    <li>
-                        {(isAdmin()) && (
-                            <li className="nav-link px-2 py-3">
-                                <Link to="/update-role">
-                                    <FaUserPlus />
-                                    <span className="mx-2">Alterar Nível de Acesso</span>
+
+                    {/* Menu Relatórios */}
+                    <li
+                        className={`d-flex align-items-center pointer nav-link px-2 py-3 ${showRelatorios ? 'active-border' : ''}`}
+                        onClick={() => setShowRelatorios(!showRelatorios)}
+                    >
+                        <span className="d-flex align-items-center gap-2 fs-6">
+                            <FaClipboardList />
+                            <span>Relatórios</span>
+                        </span>
+                        <span className={`arrow ${showRelatorios ? 'rotate' : ''}`}>▶</span>
+                    </li>
+                    {showRelatorios && (
+                        <ul className="nav flex-column ms-4">
+                            <li className="nav-link px-2 py-2">
+                                <Link to="/relatorio-servicos-realizados">
+                                    <FaTasks />
+                                    <span className="mx-2">Relatório: Serviços Realizados</span>
                                 </Link>
                             </li>
-                        )}
-                    </li>
-                </ul>
+                            <li className="nav-link px-2 py-2">
+                                <Link to="/relatorio-servicos-tramitados">
+                                    <FaExchangeAlt />
+                                    <span className="mx-2">Relatório: Serviços Tramitados</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
 
-                
+                    {/* Alterar Nível de Acesso */}
+                    {isAdmin() && (
+                        <li className="nav-link px-2 py-3 fs-6">
+                            <Link to="/update-role">
+                                <FaUserPlus />
+                                <span className="mx-2">Alterar Nível de Acesso</span>
+                            </Link>
+                        </li>
+                    )}
+                </ul>
             </div>
 
             <div className={`p-1 my-container ${show ? 'active-cont' : ''}`}>
                 <nav className="navbar top-navbar navbar-light bg-#025c14 px-1">
                     <FaBars className="fs-2 text-white" onClick={handleShow} />
                     <div className="ms-auto d-flex align-items-center">
-                        <p className='text-white mb-0 mx-5' ><FaRegUser /> {userEmail} / {userRole}</p>
-                        
-                        <div onClick={handleLogout} className="d-flex align-items-center" style={{ cursor: 'pointer' }}>
-                            <p className="text-white mb-0 me-2" style={{ marginRight: '8px' }}>SAIR</p>
+                        <p className="text-white mb-0 mx-5">
+                            <FaRegUser /> {userEmail} / {userRole}
+                        </p>
+                        <div onClick={handleLogout} className="d-flex align-items-center pointer">
+                            <p className="text-white mb-0 me-2">SAIR</p>
                             <FaSignOutAlt className="fs-3 text-white" />
                         </div>
                     </div>
@@ -189,7 +228,6 @@ function NavBar() {
                 </Container>
                 <Footer className="main-footer p-2"></Footer>
             </div>
-
         </>
     );
 }

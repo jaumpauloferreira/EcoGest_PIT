@@ -1,6 +1,6 @@
 /* NavBar.css */
 .side-navbar {
-    width: 255px;
+    width: 240px;
     height: 100vh;
     position: fixed;
     margin-left: -300px;
@@ -23,7 +23,7 @@
 }
 
 .active-cont {
-    margin-left: 255px;
+    margin-left: 240px;
 }
 
 #menu-btn {
@@ -65,3 +65,33 @@
 .user-info p {
     color: black; /* Define a cor da fonte como preta */
 }
+
+.active-border {
+    position: relative;
+    padding-left: 12px; /* Adiciona espaçamento entre o ícone e a borda */
+  }
+  
+  .active-border::before {
+    content: "";
+    position: absolute;
+    left: 1px; /* Borda alinhada no começo do item */
+    top: 0;
+    bottom: 0;
+    width: 4px; /* Largura da borda */
+    background-color: #045d14; /* Cor verde para a borda */
+  }
+  
+  .arrow {
+    margin-left: auto; /* Empurra a seta para o final do item */
+    transition: transform 0.5s ease;
+  }
+  
+  .rotate {
+    transform: rotate(90deg); /* Rota para baixo quando o menu está aberto */
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  

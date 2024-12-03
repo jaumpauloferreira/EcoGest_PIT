@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Container, Table, Alert, FormLabel } from 'react-bootstrap';
+import { Button, Col, Form, Row, Container, Table, Alert, FormLabel, Card } from 'react-bootstrap';
 import { FaCheckCircle, FaTrash, FaListAlt, FaEdit, FaSearch } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -27,6 +27,10 @@ function Maquinario() {
 
     const handleFiltrar = async () => {
         await listarMaquinarios(termoBusca);
+    };
+
+    const handleEditar = (id) => {
+        navigate(`/maquinario/${id}`);
     };
 
     const listarMaquinarios = async (termoBusca) => {
@@ -187,19 +191,22 @@ function Maquinario() {
     }
 
     return (
-        <>
-            <Container className='form-colab'>
-                <h2 className="text-center mb-4"><FaListAlt /> CADASTRO DE MAQUINÁRIO</h2>
-                <Col className="card borda">
-                    <hr />
-                    <Col className="card-body">
+        <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
+            <h2 className="text-center mb-4 fs-3">
+                <FaListAlt /> CADASTRO DE MAQUINÁRIO
+            </h2>
+
+            <Container className="mt-2">
+                <Card>
+                    <Card.Header as="h5">Informações do Maquinário</Card.Header>
+                    <Card.Body>
                         <Form noValidate validated={validated} onSubmit={handleSalvar}>
                             <Row>
-                            <Form.Group as={Col} xs={1} controlId='id' className="mt-3">
-                                    <Form.Label>ID</Form.Label>
+                            <Form.Group as={Col} xs={1} controlId='id'>
+                                <Form.Label>ID</Form.Label>
                                 <Form.Control type="text" className="form-control" placeholder="ID" aria-label="ID" aria-describedby="basic-addon2" disabled value={id} />
                                 </Form.Group>
-                                <Col xs='3' className='mt-3'>
+                                <Col xs='5' >
                                     <Form.Group controlId='modelo'>
                                         <Form.Label>Modelo</Form.Label>
                                         <Col className="input-group mb-3">
@@ -222,7 +229,7 @@ function Maquinario() {
                                     </Form.Group>
                                 </Col>
 
-                                <Col xs='3' className='mt-3'>
+                                <Col xs='3' >
                                     <Form.Group controlId='placa'>
                                         <Form.Label>Placa</Form.Label>
                                         <Col className="input-group mb-3">
@@ -245,7 +252,7 @@ function Maquinario() {
                                     </Form.Group>
                                 </Col>
 
-                                <Col xs='3' className='mt-3'>
+                                <Col xs='3' >
                                     <Form.Group controlId='ano'>
                                         <FormLabel>Ano do Maquinário</FormLabel>
                                         <Col className="input-group mb-3">
@@ -278,10 +285,10 @@ function Maquinario() {
                                 </Col>
                             </Row>
                         </Form>
-                    </Col>
-                </Col>
+                    </Card.Body>
+                </Card>
 
-                <h2 className="text-center mb-4 mt-4"><FaListAlt /> LISTA DE MAQUINÁRIOS</h2>
+                <h2 className="text-center mb-2 mt-4 fs-3"><FaListAlt /> LISTA DE MAQUINÁRIOS</h2>
                 <Form className="d-flex">
                     <Form.Control
                         type="search"
@@ -296,20 +303,21 @@ function Maquinario() {
                 {isLoading ? (
                     <p>Carregando...</p>
                 ) : (
-                    <Table striped bordered hover className="table mt-5 custom-table">
-                        <thead className='bg-green text-white'>
+                    <Table striped bordered hover className="mt-2 align-middle">
+                        <thead>
                             <tr>
-                                <th scope="col" className="w-20">ID</th>
-                                <th scope="col" className="w-20">Modelo</th>
-                                <th scope="col" className="w-20">Placa</th>
-                                <th scope="col" className="w-20">Ano</th>
-                                <th scope="col" className="w-20">Ações</th>
+                                <th>ID</th>
+                                <th>Modelo</th>
+                                <th>Placa</th>
+                                <th>Ano</th>
+                                <th colSpan={2} className='text-center'>Editar</th>
+                                <th colSpan={2} className='text-center'>Excluir</th>
                             </tr>
                         </thead>
                         <tbody>
                             {listaMaquinario.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5">Nenhum maquinário cadastrado</td>
+                                    <td colSpan="5" className="text-center">Nenhum maquinário cadastrado</td>
                                 </tr>
                             ) : (
                                 listaMaquinario.map((maquinario) => (
@@ -318,24 +326,31 @@ function Maquinario() {
                                         <td>{maquinario.modelo}</td>
                                         <td>{maquinario.placa}</td>
                                         <td>{maquinario.ano}</td>
-                                        <td>
-                                            <div className="align-items-center">
-                                                <Link to={`/maquinario/${maquinario.id}`} className='text-primary fs-5'>
-                                                    <FaEdit />
-                                                </Link>
-                                                <Button variant="link" onClick={() => handleExcluir(maquinario.id)} className='text-danger fs-5'>
-                                                    <FaTrash />
-                                                </Button>
-                                            </div>
+                                        <td colSpan={2} className='text-center'>
+                                            <Button
+                                                variant="link"
+                                                className="text-primary p-0"
+                                                onClick={() => handleEditar(maquinario.id)}>
+                                                <FaEdit />
+                                            </Button>
+                                        </td>
+                                        <td colSpan={2} className='text-center'>
+                                            <Button
+                                                variant="link"
+                                                className="text-danger p-0"
+                                                onClick={() => handleExcluir(maquinario.id)}>
+                                                <FaTrash />
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </Table>
+
                 )}
             </Container>
-        </>
+        </div>
     );
 }
 

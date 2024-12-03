@@ -197,4 +197,52 @@ INSERT INTO `realizaragserv` VALUES
 (3, 'Taisa Marina', '11122233344', '(33) 99999-8888', 'Rua das Flores, 789', 'Jardim Primavera', 120, 4, '2024-10-22', '11:30:00', 'Medição e análise da qualidade do ar em área industrial', 'Pendente', NULL);
 
 
+-- Criação das tabelas de secretaria e tramitação de serviços agendados, juntamente com suas inserções:
+DROP TABLE IF EXISTS `secretaria`;
+CREATE TABLE secretaria(
+    id INT NOT NULL AUTO_INCREMENT,
+    nome_secretaria varchar(100) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+-- Exemplo de inserção de dados para teste
+LOCK TABLE `secretaria` WRITE;
+INSERT INTO `secretaria` VALUES 
+(1,'Secretaria de Meio Ambiente'), 
+(2,'Secretaria de Governo'), 
+(3,'Secretaria de Obras'), 
+(4,'Secretaria de Serviços Municipais'),
+(5,'Secretaria de Turismo');
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `tramitarserv`;
+CREATE TABLE tramitarserv (
+    id INT NOT NULL AUTO_INCREMENT,
+    id_tiposervico INT NOT NULL,
+    id_secretaria INT NOT NULL,
+    msg_motivo TEXT NOT NULL,
+    data_tramitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'Em Análise',
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_tiposervico) REFERENCES cadastrotiposdeservico(id),
+    FOREIGN KEY (id_secretaria) REFERENCES secretaria(id)
+);
+
+-- Trigger necessária!
+DELIMITER //
+CREATE TRIGGER after_tramitarserv_insert
+AFTER INSERT ON tramitarserv
+FOR EACH ROW
+BEGIN
+    UPDATE realizaragserv 
+    SET agserv_status = NEW.status
+    WHERE agserv_tipoServico_id = NEW.id_tiposervico;
+END //
+DELIMITER ;
+
+
+INSERT INTO tramitarserv (id_tiposervico, id_secretaria, msg_motivo) VALUES
+(1, 1, 'Encaminhando para análise inicial'),
+(3, 2, 'Transferindo para setor responsável'),
+(2, 3, 'Necessita de equipamentos especiais');
 
