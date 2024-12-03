@@ -7,15 +7,9 @@ import {
   Table,
   Form,
   Button,
-  InputGroup,
+  Alert,
 } from "react-bootstrap";
-import {
-  FaListAlt,
-  FaEdit,
-  FaSearch,
-  FaTrashAlt,
-  FaList,
-} from "react-icons/fa";
+import { FaListAlt, FaEdit, FaTrashAlt, FaSearch } from "react-icons/fa";
 import BeneficiariosForm from "./BeneficiariosForm";
 import BeneficiarioService from "../../services/BeneficiarioService";
 import "./Beneficiarios.css";
@@ -26,45 +20,47 @@ function Beneficiarios() {
   const [listaBeneficiarios, setListaBeneficiarios] = useState([]);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [searchName, setSearchName] = useState("");
-  const [mostrarTabela, setMostrarTabela] = useState(false);
+  const [sucessoMensagem, setSucessoMensagem] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleFillForm = (beneficiary) => {
     setSelectedBeneficiary(beneficiary);
   };
 
-  const listarBeneficiarios = async (termoBusca) => {
-    let dados = [];
-    if (termoBusca) {
-      dados = await beneficiarioService.filtrarBeneficiarios(termoBusca);
-    } else {
-      dados = await beneficiarioService.obterTodosBeneficiarios();
+  const listarBeneficiarios = async () => {
+    setIsLoading(true);
+    try {
+      const dados = await beneficiarioService.obterTodosBeneficiarios();
+      dados.sort((a, b) => a.nome.localeCompare(b.nome));
+      setListaBeneficiarios(dados);
+    } catch (error) {
+      console.error("Erro ao listar beneficiários:", error);
+      setListaBeneficiarios([]);
+    } finally {
+      setIsLoading(false);
     }
-    // Ordenar os dados por nome
-    dados.sort((a, b) => a.nome.localeCompare(b.nome));
-    setListaBeneficiarios(dados);
-  };
-
-  const handleFiltrar = async () => {
-    await listarBeneficiarios(searchName);
-    setMostrarTabela(true);
-  };
-
-  const handleListarTodos = async () => {
-    await listarBeneficiarios();
-    setSearchName("");
-    setMostrarTabela(true);
   };
 
   const handleExcluir = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir?")) {
-      await beneficiarioService.deletarBeneficiario(id);
-      await listarBeneficiarios();
+      try {
+        await beneficiarioService.deletarBeneficiario(id);
+        await listarBeneficiarios();
+        setSucessoMensagem("Beneficiário excluído com sucesso!");
+        setTimeout(() => setSucessoMensagem(""), 3000);
+      } catch (error) {
+        console.error("Erro ao excluir beneficiário:", error);
+      }
     }
   };
 
   useEffect(() => {
     listarBeneficiarios();
   }, []);
+
+  const filteredBeneficiaries = listaBeneficiarios.filter((beneficiary) =>
+    beneficiary.nome.toLowerCase().includes(searchName.toLowerCase())
+  );
 
   const formattedDate = (dateString) => {
     const date = new Date(dateString);
@@ -74,12 +70,8 @@ function Beneficiarios() {
     return `${day}/${month}/${year}`;
   };
 
-  const filteredBeneficiaries = listaBeneficiarios.filter((beneficiary) =>
-    beneficiary.nome.toLowerCase().includes(searchName.toLowerCase())
-  );
-
   return (
-    <>
+    <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
       <h2 className="text-center fs-3">
         <FaListAlt /> CADASTRO DE BENEFICIÁRIOS
       </h2>
@@ -100,31 +92,30 @@ function Beneficiarios() {
       </Container>
       <hr />
       <h3 className="text-center mt-4">Beneficiários Cadastrados</h3>
-
-      <Container className="mt-4">
-        <Form className="d-flex justify-content-center mb-4">
-          <InputGroup>
-            <Form.Control
-              type="text"
-              placeholder="Pesquisar por nome"
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-              className="dark-gray-border"
-            />
-            <Button
-              variant="outline-secondary"
-              onClick={handleFiltrar}
-              disabled={searchName === ""}
-            >
-              <FaSearch style={{ color: "#666666" }} />
-            </Button>
-            
-            <Button variant="secondary" onClick={handleListarTodos}>
-              <FaList /> Listar Todos
-            </Button>
-          </InputGroup>
+      <Container>
+        <Alert
+          className="alert-success-custom"
+          variant="success"
+          show={sucessoMensagem !== ""}
+        >
+          {sucessoMensagem}
+        </Alert>
+        <Form className="d-flex mb-4">
+          <Form.Control
+            type="search"
+            placeholder="Pesquisar por nome"
+            className="me-2"
+            aria-label="Search"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+          <Button variant="btn btn-secondary" disabled>
+            <FaSearch />
+          </Button>
         </Form>
-        {mostrarTabela && (
+        {isLoading ? (
+          <p>Carregando...</p>
+        ) : (
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -141,43 +132,55 @@ function Beneficiarios() {
               </tr>
             </thead>
             <tbody>
-              {filteredBeneficiaries.map((beneficiary, index) => (
-                <tr key={index}>
-                  <td className="text-center">{beneficiary.id}</td>
-                  <td>{beneficiary.nome}</td>
-                  <td>{beneficiary.cpf}</td>
-                  <td>{beneficiary.contato}</td>
-                  <td>{beneficiary.email}</td>
-                  <td>{beneficiary.endereco}</td>
-                  <td>{beneficiary.bairro}</td>
-                  <td className="text-center">{beneficiary.numero}</td>
-                  <td className="text-center">
-                    {formattedDate(beneficiary.datanascimento)}
-                  </td>
-                  <td className="text-center">
-                    <FaEdit
-                      style={{ cursor: "pointer", color: "blue" }}
-                      onClick={() => handleFillForm(beneficiary)}
-                    />
-                    <FaTrashAlt
-                      style={{
-                        cursor: "pointer",
-                        color: "red",
-                        marginLeft: "10px",
-                      }}
-                      onClick={() => handleExcluir(beneficiary.id)}
-                    />
+              {filteredBeneficiaries.length === 0 ? (
+                <tr>
+                  <td colSpan="10" className="text-center">
+                    Nenhum beneficiário encontrado
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredBeneficiaries.map((beneficiary, index) => (
+                  <tr key={index}>
+                    <td className="text-center">{beneficiary.id}</td>
+                    <td>{beneficiary.nome}</td>
+                    <td>{beneficiary.cpf}</td>
+                    <td>{beneficiary.contato}</td>
+                    <td>{beneficiary.email}</td>
+                    <td>{beneficiary.endereco}</td>
+                    <td>{beneficiary.bairro}</td>
+                    <td className="text-center">{beneficiary.numero}</td>
+                    <td className="text-center">
+                      {formattedDate(beneficiary.datanascimento)}
+                    </td>
+                    <td className="text-center">
+                      <Button
+                        variant="link"
+                        className="text-primary p-0"
+                        onClick={() => handleFillForm(beneficiary)}
+                      >
+                        <FaEdit />
+                      </Button>
+                      <Button
+                        variant="link"
+                        className="text-danger p-0"
+                        onClick={() => handleExcluir(beneficiary.id)}
+                      >
+                        <FaTrashAlt />
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         )}
       </Container>
-    </>
+    </div>
   );
 }
 
 export default Beneficiarios;
+
+
 
 
