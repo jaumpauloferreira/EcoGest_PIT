@@ -1,7 +1,7 @@
 import { Button, Col, Form, Row, Container, Table, Alert, FormLabel, Card } from 'react-bootstrap';
 import { FaCheckCircle, FaTrash, FaListAlt, FaEdit, FaSearch } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import './Maquinario.css';
 import MaquinarioService from '../../services/MaquinarioService';
 

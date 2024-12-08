@@ -51,14 +51,3 @@ app.use('/api', criarAtivSustRouter);
 app.use('/api', GerenciarCicloServicoRoutes);
 app.use('./api', secretariaRouters);
 app.use('./api', TramitarServRouter);
-
-
-
-
-
-
-
-
-
-
-

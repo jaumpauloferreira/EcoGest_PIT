@@ -4,11 +4,7 @@ import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ChartBarComponent = ({ 
-  labels = ['Jan','Fev','Mar','Abr','Mai','Jun'], 
-  data = [50,19,3,5,2,3],
-  label = 'Serviços da Secretaria de Meio Ambiente'
-}) => {
+const ChartBarA = ({ labels, data, label }) => {
   const chartData = {
     labels: labels,
     datasets: [
@@ -28,17 +24,14 @@ const ChartBarComponent = ({
       },
       title: {
         display: true,
-        text: 'Distribuição de Serviços por Mês',
+        text: 'Quantidade de Atividades Sustentáveis',
       },
     },
     scales: {
       y: {
-        beginAtZero: true,
         ticks: {
-          stepSize: 1,
-          callback: function(value) {
-            return value % 1 === 0 ? value : '';
-          },
+          beginAtZero: true, 
+          stepSize: 1,        
         },
       },
     },
@@ -47,4 +40,4 @@ const ChartBarComponent = ({
   return <Bar data={chartData} options={options} />;
 };
 
-export default ChartBarComponent;
+export default ChartBarA;

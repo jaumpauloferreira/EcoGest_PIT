@@ -22,6 +22,7 @@ import TramitarServicosAgendados from './Paginas/TramitarServicosAgendados/Trami
 import Secretaria from './Paginas/Secretaria/secretaria';
 import ModeloRelatorio from './Paginas/RelatorioSaídaServiços/RelatorioServiçosRealizados';
 import RelatorioTramitar from './Paginas/RelatorioTramitar/RelatorioTramitar';
+import RelatorioAtividades from './Paginas/relatorioAtividadeSustentavel/relatorioAtividadeSustentavel';
 
 const router = createBrowserRouter([
   {
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
       {
         path: '/relatorio-servicos-tramitados',
         element: <ProtectedRoute> <RelatorioTramitar /> </ProtectedRoute>, // Rota protegida para Secretaria
+      },
+      {
+        path: '/relatorio-atividades-sustentaveis',
+        element: <ProtectedRoute> <RelatorioAtividades /> </ProtectedRoute>, // Rota protegida para Secretaria
       },
     ],
   },

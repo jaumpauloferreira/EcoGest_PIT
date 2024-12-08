@@ -9,8 +9,9 @@ import {
   Alert,
   Table,
   FormLabel,
+  Modal,
 } from "react-bootstrap";
-import { FaListAlt, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
+import { FaListAlt, FaTrash, FaEdit, FaSearch, FaQuestionCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AtivSustService from "../../services/AtivSustService.js";
 import CaixaSelecao from "../../Componentes/CaixaSelecaoTipoAtividade.jsx";
@@ -55,6 +56,10 @@ function CriarAtivSust() {
   const { idAtivSust } = useParams(); // Obtém o ID da atividade da URL
   const [errors, setErrors] = useState({});
   const [validated, setValidated] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  const handleShowTutorial = () => setShowTutorial(true);
+  const handleCloseTutorial = () => setShowTutorial(false);
 
   const handleSelecaoAtividade = (atividadeSelecionada) => {
     setAtividade((prevAtividade) => ({
@@ -148,40 +153,58 @@ function CriarAtivSust() {
     const isValid = validateFields();
 
     if (!isValid) {
-      setErro("Por favor, corrija os campos em vermelho.");
-      return;
+        setErro("Por favor, corrija os campos em vermelho.");
+        return;
     }
 
     try {
-      const dados = {
-        id: atividade.id,
-        criar_nome: atividade.criar_nome,
-        criar_cpf: atividade.criar_cpf,
-        criar_contato: atividade.criar_contato,
-        criar_endereco: atividade.criar_endereco,
-        criar_bairro: atividade.criar_bairro,
-        criar_numero: atividade.criar_numero,
-        tipoAtividade: atividade.tipoAtividade.id, // Pegando o ID da atividade
-        criar_data: atividade.criar_data,
-        criar_horarioInicial: atividade.criar_horarioInicial,
-        criar_horarioFinal: atividade.criar_horarioFinal,
-        criar_descricao: atividade.criar_descricao,
-      };
+        const dados = {
+            id: atividade.id,
+            criar_nome: atividade.criar_nome,
+            criar_cpf: atividade.criar_cpf,
+            criar_contato: atividade.criar_contato,
+            criar_endereco: atividade.criar_endereco,
+            criar_bairro: atividade.criar_bairro,
+            criar_numero: atividade.criar_numero,
+            tipoAtividade: atividade.tipoAtividade.id, // Pegando o ID da atividade
+            criar_data: atividade.criar_data,
+            criar_horarioInicial: atividade.criar_horarioInicial,
+            criar_horarioFinal: atividade.criar_horarioFinal,
+            criar_descricao: atividade.criar_descricao,
+        };
 
-      if (!idAtivSust) {
-        await ativSustService.adicionar(dados); // Caso seja um novo cadastro
-        setSucessoMensagem("Atividade cadastrada com sucesso!");
-      } else {
-        await ativSustService.atualizar(idAtivSust, dados); // Atualização no banco de dados
-        setSucessoMensagem("Atividade atualizada com sucesso!");
-      }
+        if (!idAtivSust) {
+            await ativSustService.adicionar(dados); // Caso seja um novo cadastro
+            setSucessoMensagem("Atividade cadastrada com sucesso!");
+        } else {
+            await ativSustService.atualizar(idAtivSust, dados); // Atualização no banco de dados
+            setSucessoMensagem("Atividade atualizada com sucesso!");
+        }
 
-      await listarAtividades(); // Atualiza a lista de atividades
-      navigate("/criarativsust");
+        // Limpa o formulário
+        setAtividade({
+            id: 0,
+            criar_nome: "",
+            criar_cpf: "",
+            criar_contato: "",
+            criar_endereco: "",
+            criar_bairro: "",
+            criar_numero: "",
+            tipoAtividade: { id: 0, nome: "" },
+            criar_data: "",
+            criar_horarioInicial: "",
+            criar_horarioFinal: "",
+            criar_descricao: "",
+        });
+
+        // Atualiza a tabela
+        await listarAtividades();
+        setErro("");
     } catch (error) {
-      setErro(`Erro ao salvar a atividade: ${error.message}`);
+        setErro(`Erro ao salvar a atividade: ${error.message}`);
     }
-  };
+};
+
 
   const handleAtualizar = async () => {
     const isValid = validateFields(); // Valida os campos antes de atualizar
@@ -245,8 +268,18 @@ function CriarAtivSust() {
 
   return (
     <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: "90vh" }}>
-      <h2 className="text-center mb-4 fs-3">
-        <FaListAlt /> CRIAR ATIVIDADE SUSTENTÁVEL
+      <h2 className="d-flex justify-content-between align-items-center mb-4 fs-3">
+        <span className="mx-auto text-center">
+          <FaListAlt /> CRIAR ATIVIDADE SUSTENTÁVEL
+        </span>
+        <span>
+          <FaQuestionCircle
+            className="fs-4 me-3"
+            style={{ cursor: 'pointer', marginLeft: 'auto' }}
+            onClick={handleShowTutorial}
+            title="Ajuda"
+          />
+        </span>
       </h2>
 
       <Container className="mt-2">
@@ -564,6 +597,63 @@ function CriarAtivSust() {
           </Card.Body>
         </Card>
       </Container>
+      <Modal
+        show={showTutorial}
+        onHide={handleCloseTutorial}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Tutorial: Como Criar, Atualizar ou Excluir uma Atividade Sustentável</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ol>
+            <li>
+              <strong>Nome:</strong> Preencha o nome completo do solicitante no campo <span className="text-primary">"Nome"</span>.
+            </li>
+            <li>
+              <strong>CPF:</strong> Insira o CPF do solicitante no campo <span className="text-primary">"CPF"</span>.
+            </li>
+            <li>
+              <strong>Contato:</strong> Informe um número de contato válido no campo <span className="text-primary">"Contato"</span>.
+            </li>
+            <li>
+              <strong>Local da Atividade:</strong> Preencha os campos <span className="text-primary">"Endereço"</span>, <span className="text-primary">"Bairro"</span> e <span className="text-primary">"Número"</span> indicando onde a atividade será realizada.
+            </li>
+            <li>
+              <strong>Tipo de Atividade:</strong> Selecione o tipo de atividade sustentável desejada na caixa de seleção <span className="text-primary">"Tipo de Atividade"</span>.
+            </li>
+            <li>
+              <strong>Data e Horários:</strong> Escolha a data no campo <span className="text-primary">"Data"</span> e preencha os horários de início e término nos campos <span className="text-primary">"Horário Inicial"</span> e <span className="text-primary">"Horário Final"</span>.
+            </li>
+            <li>
+              <strong>Descrição Completa:</strong> Adicione uma descrição detalhada no campo <span className="text-primary">"Descrição Completa da Atividade"</span>.
+            </li>
+            <li>
+              <strong>Cadastrar:</strong> Clique no botão <Button variant="success" size="sm">Cadastrar</Button> para salvar a atividade.
+            </li>
+            <li>
+              <strong>Atualizar:</strong> Para editar uma atividade existente:
+              <ol type="a" className="mt-2">
+                <li>Clique no ícone <FaEdit className="text-primary" /> na lista de atividades.</li>
+                <li>Atualize os campos desejados.</li>
+                <li>Clique no botão <Button variant="warning" size="sm">Atualizar</Button> para salvar as alterações.</li>
+              </ol>
+            </li>
+          </ol>
+          <img
+            src="/tutorial-criar-atividade-sustentavel.png"
+            alt="Tutorial de Criação de Atividade Sustentável"
+            className="img-fluid rounded shadow mt-3"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseTutorial}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 }

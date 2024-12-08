@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { getToken,getUserFromToken } from '../utils/auth';
 
 // const ProtectedRoute = ({ children }) => {

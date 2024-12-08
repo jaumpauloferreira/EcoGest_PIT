@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Table, Container, Alert, Modal, Form, InputGroup, Row, Col, Badge } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
-import { FaSearch, FaTrash, FaChartBar, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock, FaExclamation, FaCheck } from 'react-icons/fa';
+import { FaSearch, FaTrash, FaChartBar, FaTasks, FaCheckCircle, FaExclamationCircle, FaClock, FaExclamation, FaCheck, FaListAlt, FaQuestionCircle } from 'react-icons/fa';
 import GerenciarCicloServService from '../../services/GerenciarCicloServService';
 import { format, parseISO } from 'date-fns';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -19,7 +19,11 @@ const GerenciarCicloServicos = () => {
   const [sucessoMensagem, setSucessoMensagem] = useState('');
   const [erro, setErro] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [servicoParaExcluir, setServicoParaExcluir] = useState(null);
+  const [servicoParaExcluir, setServicoParaExcluir] = useState(null);  
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  const handleShowTutorial = () => setShowTutorial(true);
+  const handleCloseTutorial = () => setShowTutorial(false);
 
   useEffect(() => {
     carregarServicos();
@@ -137,8 +141,18 @@ const GerenciarCicloServicos = () => {
 
   return (
     <Container className="bg-white p-4 rounded shadow">
-      <h2 className="text-center mb-4">
-        <FaTasks /> Gerenciar Ciclo de Serviços
+       <h2 className="d-flex justify-content-between align-items-center mb-4 fs-3">
+        <span className="mx-auto text-center">
+          <FaListAlt /> GERENCIAR CICLO DE SERVIÇOS
+        </span>
+        <span>
+          <FaQuestionCircle
+            className="fs-4 me-3"
+            style={{ cursor: "pointer", marginLeft: "auto" }}
+            onClick={handleShowTutorial}
+            title="Ajuda"
+          />
+        </span>
       </h2>
 
       {erro && <Alert variant="danger">{erro}</Alert>}
@@ -226,18 +240,21 @@ const GerenciarCicloServicos = () => {
           <Table striped bordered hover responsive>
             <thead>
               <tr>
-                <th><Form.Check type="checkbox" onChange={toggleSelectAll} /></th>
+                <th>
+                  <Form.Check type="checkbox" onChange={toggleSelectAll} />
+                </th>
                 <th>ID</th>
                 <th>Nome do Solicitante</th>
                 <th>Contato</th>
                 <th>Data Serv.</th>
                 <th>Horário</th>
                 <th>Tipo do Serviço</th>
-                <th>Status / Excluir</th>
+                <th className="text-center">Status</th>
+                <th className="text-center">Excluir</th>
               </tr>
             </thead>
             <tbody>
-              {filteredServicos.map(servico => (
+              {filteredServicos.map((servico) => (
                 <tr key={servico.id}>
                   <td>
                     <Form.Check
@@ -248,21 +265,30 @@ const GerenciarCicloServicos = () => {
                   </td>
                   <td>{servico.id}</td>
                   <td>{servico.solicitante}</td>
-                  <td>{servico.contato}</td>
+                  <td className="text-nowrap">{servico.contato}</td>
                   <td>{format(parseISO(servico.data_servico), 'dd/MM/yyyy')}</td>
                   <td>{servico.horario}</td>
                   <td>{servico.tipo_servico}</td>
-                  <td>
-                    <Badge bg={
-                      servico.status === 'Concluído' ? 'success' :
-                      servico.status === 'Em Andamento' ? 'warning' : 'danger'
-                    }>
+                  <td className="text-center align-middle">
+                    <Badge
+                      bg={
+                        servico.status === 'Concluído'
+                          ? 'success'
+                          : servico.status === 'Em Andamento'
+                          ? 'warning'
+                          : 'danger'
+                      }
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
                       {servico.status}
                     </Badge>
+                  </td>
+                  <td className="text-center align-middle">
                     <Button
                       variant="link"
-                      className="text-danger p-0 ms-2"
+                      className="text-danger p-0"
                       onClick={() => confirmarExclusao(servico)}
+                      style={{ whiteSpace: 'nowrap' }}
                     >
                       <FaTrash />
                     </Button>
@@ -272,6 +298,7 @@ const GerenciarCicloServicos = () => {
             </tbody>
           </Table>
         </Card.Body>
+
       </Card>
 
       {/* Atualização de Status em Massa */}
@@ -300,7 +327,53 @@ const GerenciarCicloServicos = () => {
           <Button variant="danger" onClick={excluirServico}>Excluir</Button>
         </Modal.Footer>
       </Modal>
+      <Modal
+        show={showTutorial}
+        onHide={handleCloseTutorial}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+  <Modal.Title>Tutorial: Gerenciar Ciclo de Serviço</Modal.Title>
+</Modal.Header>
+<Modal.Body>
+  <ol>
+    <li>
+      <strong>Visualize o Status:</strong> Confira no gráfico a quantidade de serviços <span className="text-danger">Pendentes</span>, <span className="text-warning">Em Andamento</span>, ou <span className="text-success">Concluídos</span>.
+    </li>
+    <li>
+      <strong>Resumo Rápido:</strong> Use o painel abaixo do gráfico para ver o resumo de cada status.
+    </li>
+    <li>
+      <strong>Filtrar Serviços:</strong> Digite no campo de busca para localizar serviços por tipo.
+    </li>
+    <li>
+      <strong>Alterar Status:</strong> Marque os serviços desejados e clique em:
+      <ul>
+        <li><Button variant="danger" size="sm">Pendente</Button> para marcar como pendente.</li>
+        <li><Button variant="warning" size="sm">Em Andamento</Button> para marcar como em andamento.</li>
+        <li><Button variant="success" size="sm">Concluído</Button> para finalizar o serviço.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Excluir Serviços:</strong> Clique no ícone <FaTrash className="text-danger" /> para remover um serviço.
+    </li>
+  </ol>
+  <img
+    src="/tutorial-ciclo-servico.png"
+    alt="Tutorial Gerenciar Ciclo"
+    className="img-fluid rounded shadow mt-3"
+  />
+</Modal.Body>
+<Modal.Footer>
+  <Button variant="secondary" onClick={handleCloseTutorial}>
+    Fechar
+  </Button>
+</Modal.Footer>
+
+      </Modal>
     </Container>
+    
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Row, Form, Container, Table, Alert } from 'react-bootstrap';
-import { FaListAlt, FaSave, FaTrash, FaEdit } from 'react-icons/fa';
+import { Button, Card, Col, Row, Form, Container, Table, Alert, Modal } from 'react-bootstrap';
+import { FaListAlt, FaSave, FaTrash, FaEdit, FaQuestionCircle } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import RealizarAgServService from '../../services/RealizarAgServService.js';
@@ -46,6 +46,10 @@ function RealizarAgServ() {
   const [errors, setErrors] = useState({});
   const [validated, setValidated] = useState(false);
   const [idAgendamento, setIdAgendamento] = useState(null);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  const handleShowTutorial = () => setShowTutorial(true);
+  const handleCloseTutorial = () => setShowTutorial(false);
 
   const navigate = useNavigate();
 
@@ -256,10 +260,21 @@ function RealizarAgServ() {
 
   return (
     <div className="bg-white p-0 rounded shadow w-100" style={{ minHeight: '90vh' }}>
-      <h2 className="text-center mb-4 fs-3">
-        <FaListAlt /> REALIZAR AGENDAMENTO DE SERVIÇO
+      <h2 className="d-flex justify-content-between align-items-center mb-4 fs-3">
+        <span className="mx-auto text-center">
+          <FaListAlt /> REALIZAR AGENDAMENTO DE SERVIÇO
+        </span>
+        <span>
+          <FaQuestionCircle
+            className="fs-4 me-3"
+            style={{ cursor: 'pointer', marginLeft: 'auto' }}
+            onClick={handleShowTutorial}
+            title="Ajuda"
+          />
+        </span>
       </h2>
 
+      
       <Container className="mt-2">
         <Card>
           <Card.Header as="h5">Informações do Solicitante</Card.Header>
@@ -533,6 +548,71 @@ function RealizarAgServ() {
           </Card.Body>
         </Card>
       </Container>
+      <Modal
+        show={showTutorial}
+        onHide={handleCloseTutorial}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Tutorial: Como Criar, Atualizar ou Excluir um Agendamento</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ol>
+            <li>
+              <strong>Nome do Solicitante:</strong> Preencha o nome do solicitante no campo <span className="text-primary">"Nome"</span>.
+            </li>
+            <li>
+              <strong>CPF:</strong> Insira o CPF no formato correto no campo <span className="text-primary">"CPF"</span>.
+            </li>
+            <li>
+              <strong>Contato:</strong> Forneça um número de contato válido no campo <span className="text-primary">"Contato"</span>.
+            </li>
+            <li>
+              <strong>Tipo de Serviço:</strong> Selecione o tipo de serviço desejado na caixa de seleção <span className="text-primary">"Tipo de Serviço"</span>.
+            </li>
+            <li>
+              <strong>Data e Horário:</strong> Escolha a data e o horário desejados para o serviço nos campos <span className="text-primary">"Data"</span> e <span className="text-primary">"Horário"</span>.
+            </li>
+            <li>
+              <strong>Endereço:</strong> Informe o endereço completo no campo <span className="text-primary">"Endereço"</span>, incluindo o <span className="text-primary">"Bairro"</span> e o <span className="text-primary">"Número"</span>.
+            </li>
+            <li>
+              <strong>Descrição Completa:</strong> Adicione uma descrição detalhada do serviço no campo <span className="text-primary">"Descrição Completa do Serviço"</span>.
+            </li>
+            <li>
+              <strong>Salvar:</strong> Clique no botão <Button variant="success" size="sm">Agendar</Button> para registrar o agendamento.
+            </li>
+            <li>
+              <strong>Atualizar:</strong> Para editar um agendamento existente:
+              <ol type="a" className="mt-2">
+                <li>Clique no ícone <FaEdit className="text-primary" /> na lista de agendamentos.</li>
+                <li>Atualize os campos desejados.</li>
+                <li>Clique no botão <Button variant="warning" size="sm">Atualizar</Button> para salvar as alterações.</li>
+              </ol>
+            </li>
+            <li>
+              <strong>Excluir:</strong> Para remover um agendamento:
+              <ol type="a" className="mt-2">
+                <li>Clique no ícone <FaTrash className="text-danger" /> na lista de agendamentos.</li>
+                <li>Confirme a exclusão na janela que será exibida.</li>
+              </ol>
+            </li>
+          </ol>
+          <img
+            src="/tutorial-agendar-serviço.png"
+            alt="Tutorial de Agendamento"
+            className="img-fluid rounded shadow mt-3"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseTutorial}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
     </div>
   );
 }

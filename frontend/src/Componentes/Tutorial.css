@@ -1,0 +1,63 @@
+
+.tutorial-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .tutorial-item {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .tutorial-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .tutorial-title {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .tutorial-title img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .tutorial-description {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .tutorial-image-container {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .tutorial-image {
+    width: 100%;
+    max-width: 1000px; 
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .tutorial-item.expanded {
+    background-color: #e8f7f4;
+  }
+  
+  .tutorial-item.expanded .tutorial-description {
+    display: block;
+  }
+  
+  .tutorial-item:not(.expanded) .tutorial-description {
+    display: none;
+  }
+  

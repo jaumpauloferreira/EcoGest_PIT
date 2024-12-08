@@ -27,6 +27,17 @@ const ChartBarT = ({ labels, data, label }) => {
         text: 'Distribuição de Serviços por Secretaria',
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          callback: function(value) {
+            return value % 1 === 0 ? value : '';
+          },
+        },
+      },
+    },
   };
 
   return <Bar data={chartData} options={options} />;

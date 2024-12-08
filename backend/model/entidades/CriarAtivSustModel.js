@@ -138,7 +138,8 @@ class CriarAtivSustModel {
                 criarativsust.criar_cpf,
                 criarativsust.criar_contato,
                 criarativsust.criar_data,
-                cadtipoativsust.nome AS tipo_atividade
+                cadtipoativsust.nome AS tipo_atividade,
+                criarativsust.criar_descricao
             FROM 
                 criarativsust
             JOIN 
